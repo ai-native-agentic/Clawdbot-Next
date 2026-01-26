@@ -1,6 +1,6 @@
 // [NEW FILE] src/agents/prompt-engine/injector.ts
 
-import { IntentContext, SkillDefinition } from './types';
+import { IntentContext, SkillDefinition } from './types.js';
 
 /**
  * Defines how Generic variables map to Specific variables based on Domain.
@@ -31,7 +31,7 @@ const DOMAIN_VARIABLE_MAP: Record<string, Record<string, string>> = {
 };
 
 export class SkillInjector {
-  
+
   /**
    * Phase 3: Logic Injection & Contextualization
    * Executes the Skill Instantiation Protocol.
@@ -44,11 +44,11 @@ export class SkillInjector {
     // Prefer userLevel specific variant if available (e.g., "Expert" vs "Beginner")
     // otherwise fall back to the base template.
     let template = this.selectTemplateVariant(skill, context.userLevel);
-    
+
     if (!template) {
-        // Fallback: Use description if no template exists (Compatibility Mode)
-        // This ensures the system doesn't break if skills.json is missing templates.
-        return `### Skill: ${skill.skill_name}\n${skill.description}`;
+      // Fallback: Use description if no template exists (Compatibility Mode)
+      // This ensures the system doesn't break if skills.json is missing templates.
+      return `### Skill: ${skill.skill_name}\n${skill.description}`;
     }
 
     // 2. Variable Binding Strategy
@@ -67,7 +67,7 @@ export class SkillInjector {
     // 4. Inject Dynamic Context (Tone/UserLevel)
     // If the template supports dynamic tone injection, apply it here.
     if (context.tone) {
-        template = template.replace(/{Tone}/g, context.tone);
+      template = template.replace(/{Tone}/g, context.tone);
     }
 
     // 5. Final Assembly formatting
@@ -80,13 +80,13 @@ export class SkillInjector {
   private static selectTemplateVariant(skill: SkillDefinition, userLevel: string | null): string {
     // If no variants defined, use the main generalized template
     if (!skill.variants || skill.variants.length === 0) {
-        return skill.generalized_instruction_template || "";
+      return skill.generalized_instruction_template || "";
     }
 
     // Try to match variant name with user level (e.g. find "Expert" variant for "Expert" user)
     if (userLevel) {
-        const match = skill.variants.find(v => v.variant_name.toLowerCase().includes(userLevel.toLowerCase()));
-        if (match) return match.generalized_instruction_template;
+      const match = skill.variants.find(v => v.variant_name.toLowerCase().includes(userLevel.toLowerCase()));
+      if (match) return match.generalized_instruction_template;
     }
 
     // Default to the first variant if no specific match found

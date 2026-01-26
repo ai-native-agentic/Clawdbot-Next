@@ -1,27 +1,25 @@
-// [NEW FILE] src/agents/prompt-engine/triangulator.ts
-
-import { IntentContext } from './types';
+import { IntentContext } from './types.js';
 
 /**
  * Configuration for the Rule-Based Router (Layer 1).
  * Fast, deterministic patterns to detect domain without burning LLM tokens.
  */
 const KEYWORD_RULES = [
-  { 
-    domain: 'Coding', 
-    pattern: /\b(function|const|import|class|=>|return|npm|pip|git|docker|sudo)\b/i 
+  {
+    domain: 'Coding',
+    pattern: /\b(function|const|import|class|=>|return|npm|pip|git|docker|sudo)\b/i
   },
-  { 
-    domain: 'Finance', 
-    pattern: /\b(stock|price|market|cap|pe ratio|dividend|etf|crypto|bitcoin|bull|bear|forecast)\b/i 
+  {
+    domain: 'Finance',
+    pattern: /\b(stock|price|market|cap|pe ratio|dividend|etf|crypto|bitcoin|bull|bear|forecast)\b/i
   },
-  { 
-    domain: 'Occult', 
-    pattern: /\b(tarot|horoscope|zodiac|astrology|fortune|spirit|manifest|mercury retrograde)\b/i 
+  {
+    domain: 'Occult',
+    pattern: /\b(tarot|horoscope|zodiac|astrology|fortune|spirit|manifest|mercury retrograde)\b/i
   },
-  { 
-    domain: 'Gaming', 
-    pattern: /\b(rpg|npc|dps|tank|healer|raid|dungeon|speedrun|meta|build|nerf|buff)\b/i 
+  {
+    domain: 'Gaming',
+    pattern: /\b(rpg|npc|dps|tank|healer|raid|dungeon|speedrun|meta|build|nerf|buff)\b/i
   }
 ];
 
@@ -34,7 +32,7 @@ export interface IDomainClassifier {
 }
 
 export class Triangulator {
-  
+
   /**
    * Phase 1: Input Analysis & Requirement Triangulation
    * Executes the Hybrid Routing Architecture.
@@ -53,20 +51,57 @@ export class Triangulator {
     if (classifier) {
       try {
         const llmResult = await classifier.classify(input);
-        
+
         // Merge LLM result with defaults
         const domain = llmResult.domain || 'General';
         const status = this.evaluateCompleteness(llmResult) ? 'COMPLETE' : 'MISSING';
-        
+
         return {
-            domain,
-            userLevel: llmResult.userLevel || null,
-            tone: llmResult.tone || null,
-            status,
-            missingFields: status === 'MISSING' ? this.findMissingFields(llmResult) : [],
-            source: 'LLM_INFERENCE'
+          domain,
+          userLevel: llmResult.userLevel || null,
+          tone: llmResult.tone || null,
+          status,
+          missingFields: status === 'MISSING' ? this.findMissingFields(llmResult) : [],
+          source: 'LLM_INFERENCE'
         };
 
       } catch (error) {
         console.warn('[Triangulator] LLM classification failed, falling back.', error);
-        // Fallthrough to
+        // Fallthrough to defaults
+      }
+    }
+
+    return this.createContext('General', 'COMPLETE', 'FALLBACK');
+  }
+
+  private static createContext(
+    domain: string,
+    status: 'COMPLETE' | 'MISSING',
+    source: 'RULE_BASED' | 'LLM_INFERENCE' | 'FALLBACK'
+  ): IntentContext {
+    return {
+      domain,
+      status,
+      source,
+      userLevel: null,
+      tone: null,
+      missingFields: []
+    };
+  }
+
+  private static evaluateCompleteness(result: Partial<IntentContext>): boolean {
+    // Placeholder logic: assume missing if no domain
+    // In real implementation, this checks strict requirements
+    return !!result.domain;
+  }
+
+  private static findMissingFields(result: Partial<IntentContext>): ('domain' | 'userLevel' | 'tone')[] {
+    const missing: ('domain' | 'userLevel' | 'tone')[] = [];
+    if (!result.domain) missing.push('domain');
+    return missing;
+  }
+
+  static generateClarification(missingFields: ('domain' | 'userLevel' | 'tone')[]): string {
+    return `Could you please provide more details about ${missingFields.join(', ')}?`;
+  }
+}

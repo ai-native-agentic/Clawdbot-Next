@@ -3,7 +3,7 @@
 import fs from 'fs/promises';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import { SkillDefinition, SkillLibrary, SkillCategory } from './types';
+import { IntentContext, SkillDefinition, SkillLibrary, SkillCategory } from './types.js';
 
 // Path to the skills database provided by the user
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -35,7 +35,7 @@ export class SkillsLoader {
   static findSkill(library: SkillLibrary, skillName: string): SkillDefinition | null {
     for (const key in library) {
       const section = library[key];
-      
+
       // Check top-level skills in section
       if (section.skills) {
         const found = section.skills.find(s => s.skill_name === skillName);

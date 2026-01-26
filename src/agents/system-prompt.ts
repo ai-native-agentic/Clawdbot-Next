@@ -1,10 +1,10 @@
 // [REFACTOR] src/agents/system-prompt.ts
 
-import { SkillsLoader } from './prompt-engine/skills-loader';
-import { Triangulator } from './prompt-engine/triangulator';
-import { SkillInjector } from './prompt-engine/injector';
-import { SYSTEM_DIRECTIVES } from './prompt-engine/system-directives';
-import { IntentContext, SkillDefinition } from './prompt-engine/types';
+import { SkillsLoader } from './prompt-engine/skills-loader.js';
+import { Triangulator } from './prompt-engine/triangulator.js';
+import { SkillInjector } from './prompt-engine/injector.js';
+import { SYSTEM_DIRECTIVES } from './prompt-engine/system-directives.js';
+import { IntentContext, SkillDefinition } from './prompt-engine/types.js';
 
 /**
  * The new dynamic system prompt builder using ClawdMatrix Engine.
