@@ -114,7 +114,7 @@ This project is a derivative work based on Clawdbot.
 
 To maintain high response quality and filter out automated spam, please use the following channels for collaboration:
 
-* 💼 **LinkedIn**: [Connect on LinkedIn](https://www.linkedin.com/in/hung-ming-liu-8063299a)
+* 💼 **LinkedIn**: [Connect on LinkedIn](https://www.linkedin.com/in/hung-ming-liu-8063299a/)
 
 ---
 
