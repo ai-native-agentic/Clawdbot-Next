@@ -45,7 +45,18 @@ Unlike the original implementation which relies on static system prompts, **Claw
 | **Skill Adaptability** | Fixed Description | Variable Injection |
 | **Ambiguity Handling** | Best Effort Guess | **Guide Mode** (Clarification Request) |
 
+## 🤝 Collaboration 
+
+
+### Contact Information
+To maintain high response quality and filter out automated spam, please use the following channels:
+
+* 💼 **LinkedIn**: [Connect on LinkedIn](https://www.linkedin.com/in/hung-ming-liu-8063299a/) —— *Please include a brief note regarding your interest.*
+
+
 ---
+
+
 
 </p>
 
