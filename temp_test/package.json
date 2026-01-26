@@ -12,5 +12,8 @@
   "type": "commonjs",
   "dependencies": {
     "vitest": "^4.0.18"
+  },
+  "devDependencies": {
+    "@types/node": "^25.0.10"
   }
 }

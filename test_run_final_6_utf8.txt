@@ -1,0 +1,218 @@
+﻿
+[1m[46m RUN [49m[22m [36mv4.0.18 [39m[90mC:/AI/Clawdbot-Next[39m
+
+ [31m??[39m src/agents/prompt-engine/integration.test.ts [2m([22m[2m3 tests[22m[2m | [22m[31m1 failed[39m[2m)[22m[32m 8[2mms[22m[39m
+[31m     [31m?[31m should detect Finance domain and inject Financial skills[39m[32m 7[2mms[22m[39m
+     [32m??[39m should detect Coding domain from keywords[32m 0[2mms[22m[39m
+     [32m??[39m should trigger Guide Mode when context is vague[32m 0[2mms[22m[39m
+node.exe : 
+位於 C:\AI\Clawdbot-Nex
+t\temp_test\node_modu
+les\.bin\vitest.ps1:2
+4 字元:5
++     & "node$exe"  "
+$basedir/../vitest/vi
+test.mjs" $args
++     ~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~
+    + CategoryInfo   
+           : NotSpe  
+  cified: (:String   
+ ) [], RemoteExce    
+ption
+    + FullyQualified 
+   ErrorId : Native  
+  CommandError
+ 
+[31m?胼?胼?胼??[39m
+[1m[41m Failed Tests
+ 1 [49m[22m[31m?胼
+?胼?胼??[39m
+
+[41m[1m FAIL [22m
+[49m src/agents/promp
+t-engine/integration.
+test.ts[2m > [22mCl
+awdMatrix Engine Inte
+gration[2m > [22msh
+ould detect Finance d
+omain and inject Fina
+ncial skills
+[31m[1mAssertionErr
+or[22m: expected '\n
+# System Prompt: Prom
+pt Builder Eng?? to c
+ontain 'Drawdown\_Ris
+k'[39m
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[32m- Drawdown\_Risk
+[39m
+[31m+[39m
+[31m+ # System Promp
+t: Prompt Builder Eng
+ine[39m
+[31m+[39m
+[31m+ ## 1. Role & I
+dentity[39m
+[31m+ * **Role**: Ac
+ting as a specialist 
+in Finance.[39m
+[31m+ * **Tone**: Pr
+ofessional and Adapti
+ve.[39m
+[31m+ * **Core Philo
+sophy**: Form follows
+ Function. Every skil
+l serves a concrete e
+xecution purpose, not
+ decoration.[39m
+[31m+[39m
+[31m+ ## 2. Constrai
+nts & Quality Gates[
+39m
+[31m+ - No Ambiguity
+: Do not use words li
+ke 'maybe' or 'it dep
+ends' without providi
+ng specific scenarios
+ or conditions.[39m
+[31m+ - No Naked Num
+bers: Calculation res
+ults must include the
+ full formula or comp
+utational logic.[39m
+[31m+ - No Markdown 
+in JSON: Ensure JSON 
+outputs do not contai
+n markdown code fence
+s inside the string.
+[39m
+[31m+ - Spoiler Shie
+ld: Do not reveal plo
+t points beyond the u
+ser's current progres
+s in narratives.[39m
+[31m+[39m
+[31m+ ## 3. Active S
+kills Library[39m
+[31m+ The following 
+skills have been inst
+antiated for this spe
+cific session:[39m
+[31m+[39m
+[31m+ ### [Skill: Co
+ntext_Audit_&_Triage]
+[39m
+[31m+ ### Context_Au
+dit (Information Audi
+t & Triage)[39m
+[31m+ * **Audit Dime
+nsions**: 1. Type 2. 
+Symptoms 3. Lesion Cl
+ues 4. Constraints 5.
+ Iteration History.[
+39m
+[31m+ * **Output Sta
+tus**:[39m
+[31m+   * ? **Red (
+Missing Critical Info
+)**: Missing >2 key d
+imensions; pause anal
+ysis and request data
+.[39m
+[31m+   * ? **Yello
+w (Partial Info)**: M
+issing 1 dimension; r
+ely on inference and 
+label uncertainty.[3
+9m
+[31m+   * ? **Green
+ (Complete)**: Suffic
+ient information; exe
+cute full workflow.[
+39m
+[31m+[39m
+[31m+ ### [Skill: Fi
+nancial_Risk_&_Deploy
+ment][39m
+[31m+ ### Financial_
+Strategy (Health Chec
+k & Position Building
+)[39m
+[31m+ * **Health Che
+ck**: Calculate DTI a
+nd Cash Flow. DTI > 4
+0% = High Risk; DTI <
+ 30% = Optimizable.[
+39m
+[31m+ * **Position W
+arning**: Cite histor
+ical data (e.g., 2008
+/2011) to emphasize '
+Peak Fear ??Stock Bot
+tom'; VIX leads the s
+tock market by 1-5 mo
+nths.[39m
+[31m+ * **Repayment 
+Models**: Compare 'Av
+alanche (Interest Pri
+ority)' vs. 'Snowball
+ (Balance Priority)'.
+[39m
+[31m+[39m
+[31m+ ## 4. Executio
+n Workflow[39m
+[31m+ 1. Analyze the
+ user's request using
+ [Skill: Requirement_
+Triangulation].[39m
+[31m+ 2. Execute dom
+ain-specific logic fo
+und in the Active Ski
+lls Library.[39m
+[31m+ 3. Verify outp
+ut against Constraint
+s before responding.
+[39m
+[31m+[39m
+
+[36m [2m??[22m src/
+agents/prompt-engine/
+integration.test.ts:
+[2m17:20[22m[39m
+    [90m 15| [39m  
+  // We check for the
+ substring. Note: in 
+JS string '\\' is one
+ back??    [90m 16| 
+[39m    [90m// The 
+JSON output likely co
+ntains "Drawdown\_Ris
+k"[39m
+    [90m 17| [39m  
+  [34mexpect[39m(pr
+ompt)[33m.[39m[34m
+toContain[39m([32m'
+Drawdown\\_Risk'[39m
+)[33m;[39m
+    [90m   | [39m  
+                 [31
+m^[39m
+    [90m 18| [39m  
+})[33m;[39m
+    [90m 19| [39m
+
+[31m[2m?胼?胼?胼?胼
+?胼?胼?胼?胼?胼?胼?胼
+?胼[1/1]??[22m[39m
+
+
+[2m Test Files [22m [1m[31m1 failed[39m[22m[90m (1)[39m
+[2m      Tests [22m [1m[31m1 failed[39m[22m[2m | [22m[1m[32m2 passed[39m[22m[90m (3)[39m
+[2m   Start at [22m 11:37:16
+[2m   Duration [22m 177ms[2m (transform 39ms, setup 0ms, import 49ms, tests 8ms, environment 0ms)[22m
+
