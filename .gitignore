@@ -1,71 +1,72 @@
+# ----------------------------------------------------------------------------
+# 1. Standard Dependencies & Build Artifacts
+# ----------------------------------------------------------------------------
 node_modules
 **/node_modules/
-.env
-docker-compose.extra.yml
 dist
+**/dist/
 *.bun-build
 pnpm-lock.yaml
 bun.lock
 bun.lockb
 coverage
 .pnpm-store
+
+# ----------------------------------------------------------------------------
+# 2. [ClawdMatrix] Specific Additions
+# ----------------------------------------------------------------------------
+# 排除測試過程產生的臨時資料夾 (這是導致發布失敗的最可能原因)
+temp_test/
+**/temp_test/
+
+# 排除本地端的技能覆蓋檔 (若未來實作本地私有技能)
+src/agents/prompt-engine/data/skills.local.json
+
+# ----------------------------------------------------------------------------
+# 3. Environment & OS Files
+# ----------------------------------------------------------------------------
+.env
+.env.local
+docker-compose.extra.yml
 .worktrees/
 .DS_Store
 **/.DS_Store
+Thumbs.db
+
+# ----------------------------------------------------------------------------
+# 4. Build Artifacts for Different Platforms
+# ----------------------------------------------------------------------------
+# macOS / iOS build artifacts
+apps/macos/.build/
+apps/shared/ClawdbotKit/.build/
+**/ModuleCache/
+apps/macos/.build-local/
+apps/macos/.swiftpm/
+apps/shared/ClawdbotKit/.swiftpm/
+apps/ios/*.xcodeproj/
+apps/ios/*.xcworkspace/
+apps/ios/.swiftpm/
+
+# Binaries
+bin/
+!bin/.gitkeep
+
+# ----------------------------------------------------------------------------
+# 5. UI & Testing Artifacts
+# ----------------------------------------------------------------------------
 ui/src/ui/__screenshots__/
 ui/playwright-report/
 ui/test-results/
 
-# Bun build artifacts
-*.bun-build
-apps/macos/.build/
-apps/shared/ClawdbotKit/.build/
-**/ModuleCache/
-bin/
-bin/clawdbot-mac
-bin/docs-list
-apps/macos/.build-local/
-apps/macos/.swiftpm/
-apps/shared/ClawdbotKit/.swiftpm/
-Core/
-apps/ios/*.xcodeproj/
-apps/ios/*.xcworkspace/
-apps/ios/.swiftpm/
-vendor/
-apps/ios/Clawdbot.xcodeproj/
-apps/ios/Clawdbot.xcodeproj/**
-apps/macos/.build/**
-**/*.bun-build
-apps/ios/*.xcfilelist
-
-# Vendor build artifacts
-vendor/a2ui/renderers/lit/dist/
-.bundle.hash
-
 # fastlane (iOS)
-apps/ios/fastlane/README.md
 apps/ios/fastlane/report.xml
 apps/ios/fastlane/Preview.html
 apps/ios/fastlane/screenshots/
 apps/ios/fastlane/test_output/
 apps/ios/fastlane/logs/
-apps/ios/fastlane/.env
-apps/ios/fastlane/report.xml
 
-# fastlane build artifacts (local)
-apps/ios/*.ipa
-apps/ios/*.dSYM.zip
-
-# provisioning profiles (local)
-apps/ios/*.mobileprovision
-.env
-
-# Local untracked files
-.local/
-.vscode/
-IDENTITY.md
-USER.md
-.tgz
-
-# local tooling
-.serena/
+# ----------------------------------------------------------------------------
+# 6. Vendor specific (a2ui)
+# ----------------------------------------------------------------------------
+vendor/a2ui/renderers/lit/dist/
+.bundle.hash
