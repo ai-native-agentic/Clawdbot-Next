@@ -14,6 +14,39 @@
   <a href="https://deepwiki.com/clawdbot/clawdbot"><img src="https://img.shields.io/badge/DeepWiki-clawdbot-111111?style=for-the-badge" alt="DeepWiki"></a>
   <a href="https://discord.gg/clawd"><img src="https://img.shields.io/discord/1456350064065904867?label=Discord&logo=discord&logoColor=white&color=5865F2&style=for-the-badge" alt="Discord"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-blue.svg?style=for-the-badge" alt="MIT License"></a>
+<br/>
+
+## 🧠 ClawdMatrix Engine (Modifications / 與原版之差異)
+
+This repository is an enhanced fork of the original [Clawdbot](https://github.com/clawdbot/clawdbot), featuring the **ClawdMatrix Engine** — a sophisticated "Prompt Builder Engine" designed to give the bot a dynamic, context-aware brain.
+
+### Key Enhancements (核心優化)
+
+Unlike the original implementation which relies on static system prompts, **ClawdMatrix** introduces a 5-stage cognitive pipeline:
+
+1.  **🕵️ Requirement Triangulation (需求三角定位)**:
+    - Instead of treating all text equally, the engine analyzes `Domain`, `User Level`, and `Tone` before generating a prompt.
+    - **Hybrid Routing**: Uses ultra-fast Regex rules for obvious intents (e.g., code blocks -> Coding Mode) and falls back to LLM inference for nuance.
+
+2.  **💉 Logic Injection (動態邏輯注入)**:
+    - Implements the "Skill Instantiation Protocol".
+    - Skills are no longer static text blocks. They are dynamic templates where variables like `{Input_Data}` are automatically mapped to domain-specific contexts (e.g., `$Stock_Feed` in Finance mode vs. `$AST_Tree` in Coding mode).
+
+3.  **🛡️ Quality Gates & Fallbacks (品質閘門與保底機制)**:
+    - Includes a **Guide Mode** that detects ambiguous requests and strictly asks for clarification instead of guessing.
+    - Built-in "Safe Mode" ensures the bot never crashes even if the local classification model fails.
+
+### Architecture Comparison
+
+| Feature | Original Clawdbot | **ClawdMatrix Engine** |
+| :--- | :--- | :--- |
+| **Prompt Generation** | Static String Concatenation | Dynamic Logic Assembly |
+| **Context Awareness** | Passive (Reactive) | Active (Triangulation) |
+| **Skill Adaptability** | Fixed Description | Variable Injection |
+| **Ambiguity Handling** | Best Effort Guess | **Guide Mode** (Clarification Request) |
+
+---
+
 </p>
 
 **Clawdbot** is a *personal AI assistant* you run on your own devices.

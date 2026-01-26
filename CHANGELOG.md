@@ -1,5 +1,26 @@
 # Changelog
 
+## 2026.1.26
+
+## [Unreleased] - ClawdMatrix Engine Integration
+
+### 🚀 Features (新功能)
+- **Prompt Engine Core**: Introduced `ClawdMatrix`, a dynamic prompt builder engine located in `src/agents/prompt-engine/`.
+- **Hybrid Routing Architecture**: Implemented `Triangulator` with a two-layer routing mechanism:
+    - **Layer 1 (Fast Path)**: Rule-based regex detection for immediate domain switching (Finance, Coding, Occult, Gaming).
+    - **Layer 2 (Semantic)**: LLM-based intent analysis for complex queries (with fallback safety).
+- **Dynamic Skill Injection**: Added `SkillInjector` to support "Skill Instantiation Protocol", allowing generic skills to be contextually bound to specific variables (e.g., `{Input_Data}` -> `$Stock_Price`).
+- **Guide Mode**: Implemented a "Gate Check" that interrupts execution to ask clarifying questions if user intent is ambiguous.
+
+### 🏗️ Refactor (重構)
+- **System Prompt Architecture**: Completely rewrote `src/agents/system-prompt.ts`. Removed hardcoded static strings in favor of the `PromptEngine.build()` pipeline.
+- **Dependency Injection**: Replaced static skill definitions with a data-driven approach using `skills.json`.
+
+### 🛡️ Security & Stability (安全性與穩定性)
+- **Fallback Mechanism**: Added safe-mode fallback to ensure the agent defaults to "General/Helpful" mode if the local LLM fails to classify intent.
+- **Strict Typing**: Introduced `IntentContext` and `SkillDefinition` interfaces to enforce type safety across the prompt generation pipeline.
+
+
 Docs: https://docs.clawd.bot
 
 ## 2026.1.25
