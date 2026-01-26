@@ -1,6 +1,6 @@
 # 🦞 Clawdbot-Next
 
-**Clawdbot-Next** is a modified version of [Clawdbot](https://www.google.com/search?q=https://github.com/clawdbot/clawdbot), designed to provide a more customizable personal AI agent experience. This project maintains the core architecture while introducing specific enhancements and deployment optimizations.
+**Clawdbot-Next** is a modified version of [Clawdbot](https://github.com/clawdbot/clawdbot), designed to provide a more customizable personal AI agent experience. This project maintains the core architecture while introducing specific enhancements and deployment optimizations.
 
 > **⚠️ Notice**: This project is distributed and modified in accordance with the original Clawdbot license. Please refer to the `LICENSE` file for detailed information.
 
@@ -67,8 +67,8 @@ Required for debugging or contributing to the codebase.
 
 **Prerequisites:**
 
-* [Node.js](https://www.google.com/search?q=https://nodejs.org/) (v20 or higher recommended)
-* [pnpm](https://www.google.com/search?q=https://pnpm.io/) (required for workspace management)
+* [Node.js](https://nodejs.org/) (v20 or higher recommended)
+* [pnpm](https://pnpm.io/) (required for workspace management)
 
 1. **Install Dependencies**
 ```bash
@@ -107,14 +107,14 @@ pnpm start
 
 This project is a derivative work based on Clawdbot.
 
-* **Original Project**: [Clawdbot](https://www.google.com/search?q=https://github.com/clawdbot/clawdbot).
-* **License**: Please see the [LICENSE](https://www.google.com/search?q=./LICENSE) file for terms of use.
+* **Original Project**: [Clawdbot](https://github.com/clawdbot/clawdbot).
+* **License**: Please see the [LICENSE](./LICENSE) file for terms of use.
 
 ## 🤝 Collaboration & Contact
 
 To maintain high response quality and filter out automated spam, please use the following channels for collaboration:
 
-* 💼 **LinkedIn**: [Connect on LinkedIn](https://www.google.com/search?q=https://www.linkedin.com/in/hung-ming-liu-83b63212/)
+* 💼 **LinkedIn**: [Connect on LinkedIn](https://www.linkedin.com/in/hung-ming-liu-83b63212/)
 
 ---
 
