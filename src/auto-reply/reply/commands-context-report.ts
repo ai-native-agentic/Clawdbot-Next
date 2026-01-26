@@ -120,18 +120,18 @@ async function resolveContextReport(
   });
   const sandboxInfo = sandboxRuntime.sandboxed
     ? {
-        enabled: true,
-        workspaceDir,
-        workspaceAccess: "rw" as const,
-        elevated: {
-          allowed: params.elevated.allowed,
-          defaultLevel: (params.resolvedElevatedLevel ?? "off") as "on" | "off" | "ask" | "full",
-        },
-      }
+      enabled: true,
+      workspaceDir,
+      workspaceAccess: "rw" as const,
+      elevated: {
+        allowed: params.elevated.allowed,
+        defaultLevel: (params.resolvedElevatedLevel ?? "off") as "on" | "off" | "ask" | "full",
+      },
+    }
     : { enabled: false };
   const ttsHint = params.cfg ? buildTtsSystemPromptHint(params.cfg) : undefined;
 
-  const systemPrompt = buildAgentSystemPrompt({
+  const systemPrompt = await buildAgentSystemPrompt({
     workspaceDir,
     defaultThinkLevel: params.resolvedThinkLevel,
     reasoningLevel: params.resolvedReasoningLevel,

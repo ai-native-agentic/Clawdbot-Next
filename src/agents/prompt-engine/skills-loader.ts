@@ -3,7 +3,7 @@
 import fs from 'fs/promises';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import { IntentContext, SkillDefinition, SkillLibrary, SkillCategory } from './types.js';
+import { SkillCategory, SkillDefinition, SkillLibrary } from './types.js';
 
 // Path to the skills database provided by the user
 const __dirname = path.dirname(fileURLToPath(import.meta.url));

@@ -2,8 +2,8 @@ import { describe, expect, it } from "vitest";
 import { buildAgentSystemPrompt, buildRuntimeLine } from "./system-prompt.js";
 
 describe("buildAgentSystemPrompt", () => {
-  it("includes owner numbers when provided", () => {
-    const prompt = buildAgentSystemPrompt({
+  it("includes owner numbers when provided", async () => {
+    const prompt = await buildAgentSystemPrompt({
       workspaceDir: "/tmp/clawd",
       ownerNumbers: ["+123", " +456 ", ""],
     });
@@ -14,8 +14,8 @@ describe("buildAgentSystemPrompt", () => {
     );
   });
 
-  it("omits owner section when numbers are missing", () => {
-    const prompt = buildAgentSystemPrompt({
+  it("omits owner section when numbers are missing", async () => {
+    const prompt = await buildAgentSystemPrompt({
       workspaceDir: "/tmp/clawd",
     });
 
@@ -23,8 +23,8 @@ describe("buildAgentSystemPrompt", () => {
     expect(prompt).not.toContain("Owner numbers:");
   });
 
-  it("omits extended sections in minimal prompt mode", () => {
-    const prompt = buildAgentSystemPrompt({
+  it("omits extended sections in minimal prompt mode", async () => {
+    const prompt = await buildAgentSystemPrompt({
       workspaceDir: "/tmp/clawd",
       promptMode: "minimal",
       ownerNumbers: ["+123"],
@@ -51,8 +51,8 @@ describe("buildAgentSystemPrompt", () => {
     expect(prompt).toContain("Subagent details");
   });
 
-  it("includes voice hint when provided", () => {
-    const prompt = buildAgentSystemPrompt({
+  it("includes voice hint when provided", async () => {
+    const prompt = await buildAgentSystemPrompt({
       workspaceDir: "/tmp/clawd",
       ttsHint: "Voice (TTS) is enabled.",
     });
@@ -61,8 +61,8 @@ describe("buildAgentSystemPrompt", () => {
     expect(prompt).toContain("Voice (TTS) is enabled.");
   });
 
-  it("adds reasoning tag hint when enabled", () => {
-    const prompt = buildAgentSystemPrompt({
+  it("adds reasoning tag hint when enabled", async () => {
+    const prompt = await buildAgentSystemPrompt({
       workspaceDir: "/tmp/clawd",
       reasoningTagHint: true,
     });
@@ -72,8 +72,8 @@ describe("buildAgentSystemPrompt", () => {
     expect(prompt).toContain("<final>...</final>");
   });
 
-  it("includes a CLI quick reference section", () => {
-    const prompt = buildAgentSystemPrompt({
+  it("includes a CLI quick reference section", async () => {
+    const prompt = await buildAgentSystemPrompt({
       workspaceDir: "/tmp/clawd",
     });
 
@@ -82,8 +82,8 @@ describe("buildAgentSystemPrompt", () => {
     expect(prompt).toContain("Do not invent commands");
   });
 
-  it("lists available tools when provided", () => {
-    const prompt = buildAgentSystemPrompt({
+  it("lists available tools when provided", async () => {
+    const prompt = await buildAgentSystemPrompt({
       workspaceDir: "/tmp/clawd",
       toolNames: ["exec", "sessions_list", "sessions_history", "sessions_send"],
     });
@@ -94,8 +94,8 @@ describe("buildAgentSystemPrompt", () => {
     expect(prompt).toContain("sessions_send");
   });
 
-  it("preserves tool casing in the prompt", () => {
-    const prompt = buildAgentSystemPrompt({
+  it("preserves tool casing in the prompt", async () => {
+    const prompt = await buildAgentSystemPrompt({
       workspaceDir: "/tmp/clawd",
       toolNames: ["Read", "Exec", "process"],
       skillsPrompt:
@@ -114,8 +114,8 @@ describe("buildAgentSystemPrompt", () => {
     );
   });
 
-  it("includes docs guidance when docsPath is provided", () => {
-    const prompt = buildAgentSystemPrompt({
+  it("includes docs guidance when docsPath is provided", async () => {
+    const prompt = await buildAgentSystemPrompt({
       workspaceDir: "/tmp/clawd",
       docsPath: "/tmp/clawd/docs",
     });
@@ -127,8 +127,8 @@ describe("buildAgentSystemPrompt", () => {
     );
   });
 
-  it("includes workspace notes when provided", () => {
-    const prompt = buildAgentSystemPrompt({
+  it("includes workspace notes when provided", async () => {
+    const prompt = await buildAgentSystemPrompt({
       workspaceDir: "/tmp/clawd",
       workspaceNotes: ["Reminder: commit your changes in this workspace after edits."],
     });
@@ -136,8 +136,8 @@ describe("buildAgentSystemPrompt", () => {
     expect(prompt).toContain("Reminder: commit your changes in this workspace after edits.");
   });
 
-  it("includes user timezone when provided (12-hour)", () => {
-    const prompt = buildAgentSystemPrompt({
+  it("includes user timezone when provided (12-hour)", async () => {
+    const prompt = await buildAgentSystemPrompt({
       workspaceDir: "/tmp/clawd",
       userTimezone: "America/Chicago",
       userTime: "Monday, January 5th, 2026 — 3:26 PM",
@@ -148,8 +148,8 @@ describe("buildAgentSystemPrompt", () => {
     expect(prompt).toContain("Time zone: America/Chicago");
   });
 
-  it("includes user timezone when provided (24-hour)", () => {
-    const prompt = buildAgentSystemPrompt({
+  it("includes user timezone when provided (24-hour)", async () => {
+    const prompt = await buildAgentSystemPrompt({
       workspaceDir: "/tmp/clawd",
       userTimezone: "America/Chicago",
       userTime: "Monday, January 5th, 2026 — 15:26",
@@ -160,8 +160,8 @@ describe("buildAgentSystemPrompt", () => {
     expect(prompt).toContain("Time zone: America/Chicago");
   });
 
-  it("shows timezone when only timezone is provided", () => {
-    const prompt = buildAgentSystemPrompt({
+  it("shows timezone when only timezone is provided", async () => {
+    const prompt = await buildAgentSystemPrompt({
       workspaceDir: "/tmp/clawd",
       userTimezone: "America/Chicago",
       userTimeFormat: "24",
@@ -171,8 +171,8 @@ describe("buildAgentSystemPrompt", () => {
     expect(prompt).toContain("Time zone: America/Chicago");
   });
 
-  it("includes model alias guidance when aliases are provided", () => {
-    const prompt = buildAgentSystemPrompt({
+  it("includes model alias guidance when aliases are provided", async () => {
+    const prompt = await buildAgentSystemPrompt({
       workspaceDir: "/tmp/clawd",
       modelAliasLines: [
         "- Opus: anthropic/claude-opus-4-5",
@@ -185,8 +185,8 @@ describe("buildAgentSystemPrompt", () => {
     expect(prompt).toContain("- Opus: anthropic/claude-opus-4-5");
   });
 
-  it("adds ClaudeBot self-update guidance when gateway tool is available", () => {
-    const prompt = buildAgentSystemPrompt({
+  it("adds ClaudeBot self-update guidance when gateway tool is available", async () => {
+    const prompt = await buildAgentSystemPrompt({
       workspaceDir: "/tmp/clawd",
       toolNames: ["gateway", "exec"],
     });
@@ -196,8 +196,8 @@ describe("buildAgentSystemPrompt", () => {
     expect(prompt).toContain("update.run");
   });
 
-  it("includes skills guidance when skills prompt is present", () => {
-    const prompt = buildAgentSystemPrompt({
+  it("includes skills guidance when skills prompt is present", async () => {
+    const prompt = await buildAgentSystemPrompt({
       workspaceDir: "/tmp/clawd",
       skillsPrompt:
         "<available_skills>\n  <skill>\n    <name>demo</name>\n  </skill>\n</available_skills>",
@@ -209,8 +209,8 @@ describe("buildAgentSystemPrompt", () => {
     );
   });
 
-  it("appends available skills when provided", () => {
-    const prompt = buildAgentSystemPrompt({
+  it("appends available skills when provided", async () => {
+    const prompt = await buildAgentSystemPrompt({
       workspaceDir: "/tmp/clawd",
       skillsPrompt:
         "<available_skills>\n  <skill>\n    <name>demo</name>\n  </skill>\n</available_skills>",
@@ -220,8 +220,8 @@ describe("buildAgentSystemPrompt", () => {
     expect(prompt).toContain("<name>demo</name>");
   });
 
-  it("omits skills section when no skills prompt is provided", () => {
-    const prompt = buildAgentSystemPrompt({
+  it("omits skills section when no skills prompt is provided", async () => {
+    const prompt = await buildAgentSystemPrompt({
       workspaceDir: "/tmp/clawd",
     });
 
@@ -229,8 +229,8 @@ describe("buildAgentSystemPrompt", () => {
     expect(prompt).not.toContain("<available_skills>");
   });
 
-  it("renders project context files when provided", () => {
-    const prompt = buildAgentSystemPrompt({
+  it("renders project context files when provided", async () => {
+    const prompt = await buildAgentSystemPrompt({
       workspaceDir: "/tmp/clawd",
       contextFiles: [
         { path: "AGENTS.md", content: "Alpha" },
@@ -245,8 +245,8 @@ describe("buildAgentSystemPrompt", () => {
     expect(prompt).toContain("Bravo");
   });
 
-  it("adds SOUL guidance when a soul file is present", () => {
-    const prompt = buildAgentSystemPrompt({
+  it("adds SOUL guidance when a soul file is present", async () => {
+    const prompt = await buildAgentSystemPrompt({
       workspaceDir: "/tmp/clawd",
       contextFiles: [
         { path: "./SOUL.md", content: "Persona" },
@@ -259,8 +259,8 @@ describe("buildAgentSystemPrompt", () => {
     );
   });
 
-  it("summarizes the message tool when available", () => {
-    const prompt = buildAgentSystemPrompt({
+  it("summarizes the message tool when available", async () => {
+    const prompt = await buildAgentSystemPrompt({
       workspaceDir: "/tmp/clawd",
       toolNames: ["message"],
     });
@@ -270,8 +270,8 @@ describe("buildAgentSystemPrompt", () => {
     expect(prompt).toContain("respond with ONLY: NO_REPLY");
   });
 
-  it("includes runtime provider capabilities when present", () => {
-    const prompt = buildAgentSystemPrompt({
+  it("includes runtime provider capabilities when present", async () => {
+    const prompt = await buildAgentSystemPrompt({
       workspaceDir: "/tmp/clawd",
       runtimeInfo: {
         channel: "telegram",
@@ -283,8 +283,8 @@ describe("buildAgentSystemPrompt", () => {
     expect(prompt).toContain("capabilities=inlineButtons");
   });
 
-  it("includes agent id in runtime when provided", () => {
-    const prompt = buildAgentSystemPrompt({
+  it("includes agent id in runtime when provided", async () => {
+    const prompt = await buildAgentSystemPrompt({
       workspaceDir: "/tmp/clawd",
       runtimeInfo: {
         agentId: "work",
@@ -299,8 +299,8 @@ describe("buildAgentSystemPrompt", () => {
     expect(prompt).toContain("agent=work");
   });
 
-  it("includes reasoning visibility hint", () => {
-    const prompt = buildAgentSystemPrompt({
+  it("includes reasoning visibility hint", async () => {
+    const prompt = await buildAgentSystemPrompt({
       workspaceDir: "/tmp/clawd",
       reasoningLevel: "off",
     });
@@ -339,8 +339,8 @@ describe("buildAgentSystemPrompt", () => {
     expect(line).toContain("thinking=low");
   });
 
-  it("describes sandboxed runtime and elevated when allowed", () => {
-    const prompt = buildAgentSystemPrompt({
+  it("describes sandboxed runtime and elevated when allowed", async () => {
+    const prompt = await buildAgentSystemPrompt({
       workspaceDir: "/tmp/clawd",
       sandboxInfo: {
         enabled: true,
@@ -357,8 +357,8 @@ describe("buildAgentSystemPrompt", () => {
     expect(prompt).toContain("Current elevated level: on");
   });
 
-  it("includes reaction guidance when provided", () => {
-    const prompt = buildAgentSystemPrompt({
+  it("includes reaction guidance when provided", async () => {
+    const prompt = await buildAgentSystemPrompt({
       workspaceDir: "/tmp/clawd",
       reactionGuidance: {
         level: "minimal",

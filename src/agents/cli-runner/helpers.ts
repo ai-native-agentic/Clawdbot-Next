@@ -163,7 +163,7 @@ function buildModelAliasLines(cfg?: ClawdbotConfig) {
     .map((entry) => `- ${entry.alias}: ${entry.model}`);
 }
 
-export function buildSystemPrompt(params: {
+export async function buildSystemPrompt(params: {
   workspaceDir: string;
   config?: ClawdbotConfig;
   defaultThinkLevel?: ThinkLevel;
@@ -175,6 +175,7 @@ export function buildSystemPrompt(params: {
   contextFiles?: EmbeddedContextFile[];
   modelDisplay: string;
   agentId?: string;
+  userPrompt?: string;
 }) {
   const defaultModelRef = resolveDefaultModelForAgent({
     cfg: params.config ?? {},
@@ -212,6 +213,7 @@ export function buildSystemPrompt(params: {
     userTimeFormat,
     contextFiles: params.contextFiles,
     ttsHint,
+    userPrompt: params.userPrompt,
   });
 }
 

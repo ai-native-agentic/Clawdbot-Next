@@ -1,13 +1,12 @@
 // [NEW FILE] src/agents/prompt-engine/integration.test.ts
 
 import { buildSystemPrompt } from '../system-prompt.js';
-import { IntentContext } from './types.js';
 
 describe('ClawdMatrix Engine Integration', () => {
 
   it('should detect Finance domain and inject Financial skills', async () => {
     const userBuffer = "Analyze the PE ratio of Apple stock.";
-    const prompt = await buildSystemPrompt(userBuffer);
+    await buildSystemPrompt(userBuffer);
 
     expect(prompt).toContain('**Role**: Acting as a specialist in Finance');
     expect(prompt).toContain('Active Skills Library');
