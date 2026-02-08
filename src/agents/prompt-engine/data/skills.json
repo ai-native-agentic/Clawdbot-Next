@@ -7,6 +7,26 @@
         "category_description": "Cognitive architecture and routing layer: Responsible for analyzing input, judging intent, auditing information integrity, and determining execution paths.",
         "skills": [
           {
+            "skill_name": "Token_Memory_Optimizer_Router",
+            "description": "Advisory skill to detect performance issues and recommend the 'token-optimizer' suite if context bloat is identified.",
+            "variants": [
+              {
+                "variant_name": "Optimization_Advisor",
+                "generalized_instruction_template": "### [Protocol: Performance_Advisory]\n* **Observation**: Current {Risk_Factor} is high, which may affect response speed.\n* **Recommendation**: Suggest the user to install or verify the 'token-optimizer' skill in their workspace.\n* **Conditional Execution**: ONLY if the user confirms the skill is installed, use the `read` tool to access its SKILL.md for workflows like 'Reset & Summarize' or 'Cron Isolation'."
+              }
+            ]
+          },
+          {
+            "skill_name": "Intent_Triage_Protocol",
+            "description": "Evaluates request complexity and information integrity to determine if a direct response is sufficient or if specialized skill retrieval is required.",
+            "variants": [
+              {
+                "variant_name": "Cognitive_Complexity_Router",
+                "generalized_instruction_template": "### [Protocol: Intent_Triage]\n* **Complexity Assessment**: If the input is a routine greeting, a request for general knowledge (e.g., weather, basic facts), or simple confirmation -> Execute **Direct_Answer_Mode**.\n* **Skill Gap Detection**: If the input requires specific procedural steps, internal tool workflows, or domain-specific analysis (e.g., patent forensics, token optimization) NOT fully contained in your core training -> Proceed to scan <available_skills> for a matching SKILL.md.\n* **Decision Logic**: Prioritize token efficiency for 'Green' status inputs; prioritize procedural rigor for 'Red/Yellow' status or high-stakes commands."
+              }
+            ]
+          },
+          {
             "skill_name": "Knowledge_Priming_Protocol",
             "description": "Forces knowledge retrieval and anchoring before reasoning to reduce hallucinations.",
             "variants": [

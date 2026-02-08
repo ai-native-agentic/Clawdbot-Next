@@ -20,21 +20,28 @@ import { IntentContext, SkillDefinition } from './prompt-engine/types.js';
  */
 export type PromptMode = "full" | "minimal" | "none";
 
+// system-prompt.ts
 function buildSkillsSection(params: {
   skillsPrompt?: string;
   isMinimal: boolean;
   readToolName: string;
+  context?: IntentContext;
 }) {
   if (params.isMinimal) return [];
   const trimmed = params.skillsPrompt?.trim();
   if (!trimmed) return [];
+
+  const isSimpleRequest = params.context?.status === 'COMPLETE';
+  const scanDirective = isSimpleRequest
+    ? "Optimization: This request appears straightforward. Execute [Protocol: Intent_Triage] to decide if direct response is sufficient."
+    : "Before replying: scan <available_skills> <description> entries to find a matching procedural SKILL.md.";
+
   return [
     "## Skills (mandatory)",
-    "Before replying: scan <available_skills> <description> entries.",
+    scanDirective,
     `- If exactly one skill clearly applies: read its SKILL.md at <location> with \`${params.readToolName}\`, then follow it.`,
     "- If multiple could apply: choose the most specific one, then read/follow it.",
     "- If none clearly apply: do not read any SKILL.md.",
-    "Constraints: never read more than one skill up front; only read after selecting.",
     trimmed,
     "",
   ];
@@ -134,35 +141,6 @@ function buildDocsSection(params: { docsPath?: string; isMinimal: boolean; readT
   ];
 }
 
-/**
- * Helper to select skills based on the IntentContext.
- * Implements the "Skill Matrix Retrieval" logic.
- */
-function selectSkillsForContext(library: any, context: IntentContext): SkillDefinition[] {
-  const skills: SkillDefinition[] = [];
-
-  // Always include Core Cognitive Skills
-  const coreSkill = SkillsLoader.findSkill(library, 'Context_Audit_&_Triage');
-  if (coreSkill) skills.push(coreSkill);
-
-  // Domain specific routing
-  if (context.domain === 'Finance') {
-    const financeSkill = SkillsLoader.findSkill(library, 'Financial_Risk_&_Deployment');
-    if (financeSkill) skills.push(financeSkill);
-  } else if (context.domain === 'Coding') {
-    // "Workflow_to_Code_Mapping" covers logic-to-code transformation
-    const codingSkill = SkillsLoader.findSkill(library, 'Workflow_to_Code_Mapping');
-    if (codingSkill) skills.push(codingSkill);
-  }
-
-  // Fallback / General skills
-  if (skills.length === 0) {
-    const generalSkill = SkillsLoader.findSkill(library, 'General_Reasoning');
-    if (generalSkill) skills.push(generalSkill);
-  }
-
-  return skills;
-}
 
 /**
  * Constructs the Matrix-injected prompt sections.
@@ -255,6 +233,7 @@ export async function buildAgentSystemPrompt(params: {
   userPrompt?: string;
 }): Promise<string> {
   // [NEW] 1. Initialize the Knowledge Base (Data Layer)
+  // (library is still loaded for fallback/internal use if needed, but primary routing is via domain-map)
   const library = await SkillsLoader.loadLibrary();
 
   // [NEW] 2. Phase 1: Input Analysis & Triangulation (Cognitive Layer)
@@ -262,13 +241,18 @@ export async function buildAgentSystemPrompt(params: {
   const userRawText = params.userPrompt || "Hello";
   const context: IntentContext = await Triangulator.analyze(userRawText);
 
-  // [NEW] 3. Phase 2: Skill Selection (Matrix Retrieval)
-  const selectedSkills = selectSkillsForContext(library, context);
+  // [NEW] 3. Phase 2: Skill Selection (Matrix Retrieval) - Now Dynamic
+  const selectedSkills = await SkillsLoader.getSkillsForDomain(context.domain);
 
   // [NEW] 4. Phase 3: Logic Injection (Compiler Layer)
-  const instantiatedSkills = selectedSkills.map(skill =>
+  let instantiatedSkills = selectedSkills.map(skill =>
     SkillInjector.instantiate(skill, context)
   ).join('\n\n');
+
+  // [NEW] Integration: Restore display of user-installed external SKILL.md files
+  if (params.skillsPrompt?.trim()) {
+    instantiatedSkills += '\n\n### [Library: External Procedural Skills]\n' + params.skillsPrompt.trim();
+  }
 
   // [NEW] Build the Matrix parts
   const matrixLines = buildMatrixSection(context, instantiatedSkills);
@@ -405,6 +389,7 @@ export async function buildAgentSystemPrompt(params: {
     skillsPrompt,
     isMinimal,
     readToolName,
+    context: context,
   });
   const memorySection = buildMemorySection({ isMinimal, availableTools });
   const docsSection = buildDocsSection({
@@ -417,7 +402,9 @@ export async function buildAgentSystemPrompt(params: {
   // For "none" mode, return just the basic identity line
   if (promptMode === "none") {
     // If none mode, we might still want the Matrix persona if available, or fallback
-    return matrixLines.length > 0 ? matrixLines.join("\n") : "You are a personal assistant running inside Clawdbot.";
+    return matrixLines.length > 0
+      ? matrixLines.join("\n")
+      : "You are a personal assistant.";
   }
 
   const lines = [
@@ -517,7 +504,23 @@ export async function buildAgentSystemPrompt(params: {
   const contextFiles = params.contextFiles ?? [];
   if (contextFiles.length > 0) {
     lines.push("# Project Context", "", "The following project context files have been loaded:");
-    lines.push("");
+
+    // 1. 先定義判斷邏輯
+    const hasSoulFile = contextFiles.some((file) => {
+      const normalizedPath = file.path.trim().replace(/\\/g, "/");
+      const baseName = normalizedPath.split("/").pop() ?? normalizedPath;
+      return baseName.toLowerCase() === "soul.md";
+    });
+
+    // 2. 如果存在，注入指令
+    if (hasSoulFile) {
+      lines.push(
+        "If SOUL.md is present, embody its persona and tone. Avoid stiff, generic replies; follow its guidance unless higher-priority instructions override it.",
+      );
+    }
+
+    // 3. 原有的檔案內容輸出迴圈
+    lines.push(""); // 保持間隔
     for (const file of contextFiles) {
       lines.push(`## ${file.path}`, "", file.content, "");
     }
