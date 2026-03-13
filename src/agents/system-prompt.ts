@@ -1,4 +1,3 @@
-
 import type { ReasoningLevel, ThinkLevel } from "../auto-reply/thinking.js";
 import { SILENT_REPLY_TOKEN } from "../auto-reply/tokens.js";
 import { listDeliverableMessageChannels } from "../utils/message-channel.js";
@@ -6,11 +5,11 @@ import type { ResolvedTimeFormat } from "./date-time.js";
 import type { EmbeddedContextFile } from "./pi-embedded-helpers.js";
 
 // [NEW] Prompt Engine Imports
-import { SkillsLoader } from './prompt-engine/skills-loader.js';
-import { Triangulator } from './prompt-engine/triangulator.js';
-import { SkillInjector } from './prompt-engine/injector.js';
-import { SYSTEM_DIRECTIVES } from './prompt-engine/system-directives.js';
-import { IntentContext, SkillDefinition } from './prompt-engine/types.js';
+import { SkillsLoader } from "./prompt-engine/skills-loader.js";
+import { Triangulator } from "./prompt-engine/triangulator.js";
+import { SkillInjector } from "./prompt-engine/injector.js";
+import { SYSTEM_DIRECTIVES } from "./prompt-engine/system-directives.js";
+import { IntentContext } from "./prompt-engine/types.js";
 
 /**
  * Controls which hardcoded sections are included in the system prompt.
@@ -31,7 +30,7 @@ function buildSkillsSection(params: {
   const trimmed = params.skillsPrompt?.trim();
   if (!trimmed) return [];
 
-  const isSimpleRequest = params.context?.status === 'COMPLETE';
+  const isSimpleRequest = params.context?.status === "COMPLETE";
   const scanDirective = isSimpleRequest
     ? "Optimization: This request appears straightforward. Execute [Protocol: Intent_Triage] to decide if direct response is sufficient."
     : "Before replying: scan <available_skills> <description> entries to find a matching procedural SKILL.md.";
@@ -98,21 +97,21 @@ function buildMessagingSection(params: {
     "- Never use exec/curl for provider messaging; Clawdbot handles all routing internally.",
     params.availableTools.has("message")
       ? [
-        "",
-        "### message tool",
-        "- Use `message` for proactive sends + channel actions (polls, reactions, etc.).",
-        "- For `action=send`, include `to` and `message`.",
-        `- If multiple channels are configured, pass \`channel\` (${params.messageChannelOptions}).`,
-        `- If you use \`message\` (\`action=send\`) to deliver your user-visible reply, respond with ONLY: ${SILENT_REPLY_TOKEN} (avoid duplicate replies).`,
-        params.inlineButtonsEnabled
-          ? "- Inline buttons supported. Use `action=send` with `buttons=[[{text,callback_data}]]` (callback_data routes back as a user message)."
-          : params.runtimeChannel
-            ? `- Inline buttons not enabled for ${params.runtimeChannel}. If you need them, ask to set ${params.runtimeChannel}.capabilities.inlineButtons ("dm"|"group"|"all"|"allowlist").`
-            : "",
-        ...(params.messageToolHints ?? []),
-      ]
-        .filter(Boolean)
-        .join("\n")
+          "",
+          "### message tool",
+          "- Use `message` for proactive sends + channel actions (polls, reactions, etc.).",
+          "- For `action=send`, include `to` and `message`.",
+          `- If multiple channels are configured, pass \`channel\` (${params.messageChannelOptions}).`,
+          `- If you use \`message\` (\`action=send\`) to deliver your user-visible reply, respond with ONLY: ${SILENT_REPLY_TOKEN} (avoid duplicate replies).`,
+          params.inlineButtonsEnabled
+            ? "- Inline buttons supported. Use `action=send` with `buttons=[[{text,callback_data}]]` (callback_data routes back as a user message)."
+            : params.runtimeChannel
+              ? `- Inline buttons not enabled for ${params.runtimeChannel}. If you need them, ask to set ${params.runtimeChannel}.capabilities.inlineButtons ("dm"|"group"|"all"|"allowlist").`
+              : "",
+          ...(params.messageToolHints ?? []),
+        ]
+          .filter(Boolean)
+          .join("\n")
       : "",
     "",
   ];
@@ -141,7 +140,6 @@ function buildDocsSection(params: { docsPath?: string; isMinimal: boolean; readT
   ];
 }
 
-
 /**
  * Constructs the Matrix-injected prompt sections.
  */
@@ -151,11 +149,11 @@ function buildMatrixSection(context: IntentContext, skillBody: string): string[]
     "",
     "## 1. Role & Identity",
     `* **Role**: Acting as a specialist in ${context.domain}.`,
-    `* **Tone**: ${context.tone || 'Professional and Adaptive'}.`,
+    `* **Tone**: ${context.tone || "Professional and Adaptive"}.`,
     `* **Core Philosophy**: ${SYSTEM_DIRECTIVES.PERSONA.CORE_PHILOSOPHY}`,
     "",
     "## 2. Constraints & Quality Gates",
-    ...SYSTEM_DIRECTIVES.QUALITY_GATES.NEGATIVE_CONSTRAINTS.map(c => `- ${c}`),
+    ...SYSTEM_DIRECTIVES.QUALITY_GATES.NEGATIVE_CONSTRAINTS.map((c) => `- ${c}`),
     "",
     "## 3. Active Skills Library",
     "The following skills have been instantiated for this specific session:",
@@ -166,7 +164,7 @@ function buildMatrixSection(context: IntentContext, skillBody: string): string[]
     "1. Analyze the user's request using [Skill: Requirement_Triangulation].",
     "2. Execute domain-specific logic found in the Active Skills Library.",
     "3. Verify output against Constraints before responding.",
-    ""
+    "",
   ];
 }
 
@@ -234,7 +232,7 @@ export async function buildAgentSystemPrompt(params: {
 }): Promise<string> {
   // [NEW] 1. Initialize the Knowledge Base (Data Layer)
   // (library is still loaded for fallback/internal use if needed, but primary routing is via domain-map)
-  const library = await SkillsLoader.loadLibrary();
+  const _library = await SkillsLoader.loadLibrary();
 
   // [NEW] 2. Phase 1: Input Analysis & Triangulation (Cognitive Layer)
   // Default to general if no user prompt is provided (e.g. heartbeat or first boot before input)
@@ -245,13 +243,14 @@ export async function buildAgentSystemPrompt(params: {
   const selectedSkills = await SkillsLoader.getSkillsForDomain(context.domain);
 
   // [NEW] 4. Phase 3: Logic Injection (Compiler Layer)
-  let instantiatedSkills = selectedSkills.map(skill =>
-    SkillInjector.instantiate(skill, context)
-  ).join('\n\n');
+  let instantiatedSkills = selectedSkills
+    .map((skill) => SkillInjector.instantiate(skill, context))
+    .join("\n\n");
 
   // [NEW] Integration: Restore display of user-installed external SKILL.md files
   if (params.skillsPrompt?.trim()) {
-    instantiatedSkills += '\n\n### [Library: External Procedural Skills]\n' + params.skillsPrompt.trim();
+    instantiatedSkills +=
+      "\n\n### [Library: External Procedural Skills]\n" + params.skillsPrompt.trim();
   }
 
   // [NEW] Build the Matrix parts
@@ -361,12 +360,12 @@ export async function buildAgentSystemPrompt(params: {
       : undefined;
   const reasoningHint = params.reasoningTagHint
     ? [
-      "ALL internal reasoning MUST be inside <think>...</think>.",
-      "Do not output any analysis outside <think>.",
-      "Format every reply as <think>...</think> then <final>...</final>, with no other text.",
-      "Only the final user-visible reply may appear inside <final>.",
-      "Only text inside <final> is shown to the user; everything else is discarded and never seen by the user.",
-    ].join(" ")
+        "ALL internal reasoning MUST be inside <think>...</think>.",
+        "Do not output any analysis outside <think>.",
+        "Format every reply as <think>...</think> then <final>...</final>, with no other text.",
+        "Only the final user-visible reply may appear inside <final>.",
+        "Only text inside <final> is shown to the user; everything else is discarded and never seen by the user.",
+      ].join(" ")
     : undefined;
   const reasoningLevel = params.reasoningLevel ?? "off";
   const userTimezone = params.userTimezone?.trim();
@@ -385,7 +384,7 @@ export async function buildAgentSystemPrompt(params: {
   const messageChannelOptions = listDeliverableMessageChannels().join("|");
   const promptMode = params.promptMode ?? "full";
   const isMinimal = promptMode === "minimal" || promptMode === "none";
-  const skillsSection = buildSkillsSection({
+  const _skillsSection = buildSkillsSection({
     skillsPrompt,
     isMinimal,
     readToolName,
@@ -402,9 +401,7 @@ export async function buildAgentSystemPrompt(params: {
   // For "none" mode, return just the basic identity line
   if (promptMode === "none") {
     // If none mode, we might still want the Matrix persona if available, or fallback
-    return matrixLines.length > 0
-      ? matrixLines.join("\n")
-      : "You are a personal assistant.";
+    return matrixLines.length > 0 ? matrixLines.join("\n") : "You are a personal assistant.";
   }
 
   const lines = [
@@ -417,12 +414,12 @@ export async function buildAgentSystemPrompt(params: {
     toolLines.length > 0
       ? toolLines.join("\n")
       : [
-        "Clawdbot lists the standard tools above. This runtime enables:",
-        "- grep, find, ls, apply_patch",
-        `- ${execToolName}, ${processToolName}`,
-        "- browser, canvas, nodes, cron",
-        "- sessions_list, sessions_history, sessions_send",
-      ].join("\n"),
+          "Clawdbot lists the standard tools above. This runtime enables:",
+          "- grep, find, ls, apply_patch",
+          `- ${execToolName}, ${processToolName}`,
+          "- browser, canvas, nodes, cron",
+          "- sessions_list, sessions_history, sessions_send",
+        ].join("\n"),
     "TOOLS.md does not control tool availability; it is user guidance for how to use external tools.",
     "If a task is more complex or takes longer, spawn a sub-agent.",
     "",
@@ -439,9 +436,9 @@ export async function buildAgentSystemPrompt(params: {
     hasGateway && !isMinimal ? "## Clawdbot Self-Update" : "",
     hasGateway && !isMinimal
       ? [
-        "Get Updates (self-update) is ONLY allowed when the user explicitly asks for it.",
-        "Actions: config.get, config.schema, config.apply, update.run.",
-      ].join("\n")
+          "Get Updates (self-update) is ONLY allowed when the user explicitly asks for it.",
+          "Actions: config.get, config.schema, config.apply, update.run.",
+        ].join("\n")
       : "",
     hasGateway && !isMinimal ? "" : "",
     "",
@@ -461,14 +458,14 @@ export async function buildAgentSystemPrompt(params: {
     params.sandboxInfo?.enabled ? "## Sandbox" : "",
     params.sandboxInfo?.enabled
       ? [
-        "You are running in a sandboxed runtime (tools execute in Docker).",
-        "Some tools may be unavailable due to sandbox policy.",
-        params.sandboxInfo.workspaceDir
-          ? `Sandbox workspace: ${params.sandboxInfo.workspaceDir}`
-          : "",
-      ]
-        .filter(Boolean)
-        .join("\n")
+          "You are running in a sandboxed runtime (tools execute in Docker).",
+          "Some tools may be unavailable due to sandbox policy.",
+          params.sandboxInfo.workspaceDir
+            ? `Sandbox workspace: ${params.sandboxInfo.workspaceDir}`
+            : "",
+        ]
+          .filter(Boolean)
+          .join("\n")
       : "",
     params.sandboxInfo?.enabled ? "" : "",
     ...buildUserIdentitySection(ownerLine, isMinimal),
@@ -494,8 +491,12 @@ export async function buildAgentSystemPrompt(params: {
     lines.push(contextHeader, extraSystemPrompt, "");
   }
   if (params.reactionGuidance) {
-    const { level, channel } = params.reactionGuidance;
-    lines.push("## Reactions", level === "minimal" ? "Reaction level: Minimal" : "Reaction level: Extensive", "");
+    const { level } = params.reactionGuidance;
+    lines.push(
+      "## Reactions",
+      level === "minimal" ? "Reaction level: Minimal" : "Reaction level: Extensive",
+      "",
+    );
   }
   if (reasoningHint) {
     lines.push("## Reasoning Format", reasoningHint, "");
@@ -530,7 +531,7 @@ export async function buildAgentSystemPrompt(params: {
     lines.push(
       "## Silent Replies",
       `When you have nothing to say, respond with ONLY: ${SILENT_REPLY_TOKEN}`,
-      ""
+      "",
     );
   }
 
@@ -539,14 +540,14 @@ export async function buildAgentSystemPrompt(params: {
       "## Heartbeats",
       heartbeatPromptLine,
       "If heartbeat poll matches and no attention needed: 'HEARTBEAT_OK'",
-      ""
+      "",
     );
   }
 
   lines.push(
     "## Runtime",
     buildRuntimeLine(runtimeInfo, runtimeChannel, runtimeCapabilities, params.defaultThinkLevel),
-    `Reasoning: ${reasoningLevel}`
+    `Reasoning: ${reasoningLevel}`,
   );
 
   return lines.filter(Boolean).join("\n");

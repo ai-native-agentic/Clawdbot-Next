@@ -1,0 +1,57 @@
+TASK: Normalize Clawdbot-Next/AGENTS.md to org-wide standard format
+
+VERIFICATION:
+✓ All 6 standard sections present:
+  - ## OVERVIEW
+  - ## STRUCTURE
+  - ## WHERE TO LOOK
+  - ## COMMANDS
+  - ## CONVENTIONS
+  - ## ANTI-PATTERNS
+
+✓ Line count: 150 (target: ≤150, original: 162)
+  - Trimmed 12 lines by condensing verbose content
+  - Preserved all critical technical information
+
+✓ Committed: docs(Clawdbot-Next): normalize AGENTS.md format
+  - Commit SHA: 23f59eb
+  - Changed: 150 insertions(+), 162 deletions(-)
+
+CHANGES MADE:
+1. Added ## OVERVIEW section (project summary)
+2. Renamed "Project Structure & Module Organization" → ## STRUCTURE
+3. Renamed "Build, Test, and Development Commands" → ## COMMANDS
+4. Added ## WHERE TO LOOK table (condensed from scattered references)
+5. Reorganized content into ## CONVENTIONS subsections:
+   - Coding Style
+   - Testing
+   - Docs (Mintlify)
+   - Plugins
+   - Commits & PRs
+   - Release Channels
+   - Multi-Agent Safety
+6. Added ## ANTI-PATTERNS table
+7. Condensed verbose content:
+   - WHERE TO LOOK: merged similar entries, shortened notes
+   - Docs: 5 lines → 3 lines
+   - Plugins: 4 lines → 2 lines
+   - Testing: 5 lines → 3 lines
+   - Commits & PRs: 5 lines → 5 lines (condensed wording)
+   - Release Channels: 3 lines → 1 line
+   - Multi-Agent Safety: 7 lines → 3 lines
+   - Coding Style: 5 lines → 3 lines
+
+EVIDENCE:
+$ grep "^## " AGENTS.md
+## OVERVIEW
+## STRUCTURE
+## WHERE TO LOOK
+## COMMANDS
+## CONVENTIONS
+## ANTI-PATTERNS
+
+$ wc -l < AGENTS.md
+150
+
+$ git log -1 --oneline
+23f59eb docs(Clawdbot-Next): normalize AGENTS.md format

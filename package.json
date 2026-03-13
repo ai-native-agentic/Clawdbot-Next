@@ -152,7 +152,7 @@
   "dependencies": {
     "@agentclientprotocol/sdk": "0.13.1",
     "@aws-sdk/client-bedrock": "^3.975.0",
-    "@buape/carbon": "0.14.0",
+    "@buape/carbon": "^0.5.0",
     "@clack/prompts": "^0.11.0",
     "@grammyjs/runner": "^2.0.3",
     "@grammyjs/transformer-throttler": "^1.2.1",
@@ -182,7 +182,7 @@
     "express": "^5.2.1",
     "file-type": "^21.3.0",
     "grammy": "^1.39.3",
-    "hono": "4.11.4",
+    "hono": "^4.12.7",
     "jiti": "^2.6.1",
     "json5": "^2.2.3",
     "jszip": "^3.10.1",
@@ -206,7 +206,7 @@
   },
   "optionalDependencies": {
     "@napi-rs/canvas": "^0.1.88",
-    "node-llama-cpp": "3.15.0"
+    "node-llama-cpp": "^3.17.1"
   },
   "devDependencies": {
     "@grammyjs/types": "^3.23.0",

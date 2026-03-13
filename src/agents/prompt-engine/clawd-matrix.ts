@@ -1,14 +1,14 @@
 // path: ClawdMatrix/prompt-engine/clawd-matrix.ts
 
-import { SkillInjector } from './injector.js';
-import { SkillsLoader } from './skills-loader.js';
-import { Triangulator } from './triangulator.js';
-import { IntentContext, SkillDefinition } from './types.js';
+import { SkillInjector } from "./injector.js";
+import { SkillsLoader } from "./skills-loader.js";
+import { Triangulator } from "./triangulator.js";
+import { IntentContext } from "./types.js";
 
 export class ClawdMatrix {
   private static instance: ClawdMatrix;
 
-  private constructor() { }
+  private constructor() {}
 
   public static getInstance(): ClawdMatrix {
     if (!ClawdMatrix.instance) {
@@ -34,15 +34,19 @@ export class ClawdMatrix {
     // 或者完全信任 JSON 配置（建議完全信任 JSON 以達到最大靈活度）。
 
     // 3. Dynamic Skill Injection
-    const activeSkills = skills.map(skill =>
-      SkillInjector.instantiate(skill, context)
-    ).join('\n\n');
+    const activeSkills = skills
+      .map((skill) => SkillInjector.instantiate(skill, context))
+      .join("\n\n");
 
     // 5. Final Prompt Assembly
     return this.assemblePrompt(routingResult.domain, activeSkills, context);
   }
 
-  private assemblePrompt(domain: string, skillInstructions: string, _context: IntentContext): string {
+  private assemblePrompt(
+    domain: string,
+    skillInstructions: string,
+    _context: IntentContext,
+  ): string {
     return `
 # Role
 You are Clawd, an AI assistant specialized in ${domain}.
