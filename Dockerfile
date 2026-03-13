@@ -32,4 +32,8 @@ RUN pnpm ui:build
 
 ENV NODE_ENV=production
 
+# Create non-root user
+RUN useradd -m appuser
+USER appuser
+
 CMD ["node", "dist/index.js"]
