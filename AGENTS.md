@@ -11,31 +11,198 @@ Stack: TypeScript (ESM), Node 22+, Bun, pnpm, Vitest, oxlint/oxfmt, Mintlify doc
 
 ## STRUCTURE
 
-```
 Clawdbot-Next/
+├── Swabble/
+│   ├── Sources/
+│   ├── Tests/
+│   ├── docs/
+│   ├── scripts/
+│   ├── README.md
+├── apps/
+│   ├── android/
+│   ├── ios/
+│   ├── macos/
+│   └── shared/
+├── assets/
+│   ├── chrome-extension/
+├── docs/
+│   ├── _layouts/
+│   ├── assets/
+│   ├── automation/
+│   ├── channels/
+│   ├── cli/
+│   ├── concepts/
+│   ├── debug/
+│   ├── diagnostics/
+│   ├── experiments/
+│   ├── gateway/
+│   ├── help/
+│   ├── hooks/
+│   ├── images/
+│   ├── install/
+│   ├── nodes/
+│   ├── platforms/
+│   ├── plugins/
+│   ├── providers/
+│   ├── refactor/
+│   ├── reference/
+│   ├── start/
+│   ├── tools/
+│   ├── web/
+├── extensions/
+│   ├── bluebubbles/
+│   ├── copilot-proxy/
+│   ├── diagnostics-otel/
+│   ├── discord/
+│   ├── google-antigravity-auth/
+│   ├── google-gemini-cli-auth/
+│   ├── googlechat/
+│   ├── imessage/
+│   ├── line/
+│   ├── llm-task/
+│   ├── lobster/
+│   ├── matrix/
+│   ├── mattermost/
+│   ├── memory-core/
+│   ├── memory-lancedb/
+│   ├── msteams/
+│   ├── nextcloud-talk/
+│   ├── nostr/
+│   ├── open-prose/
+│   ├── qwen-portal-auth/
+│   ├── signal/
+│   ├── slack/
+│   ├── telegram/
+│   ├── tlon/
+│   ├── voice-call/
+│   ├── whatsapp/
+│   ├── zalo/
+│   ├── zalouser/
+│   └── AGENTS.md
+├── git-hooks/
+├── patches/
+├── scripts/
+│   ├── docker/
+│   ├── e2e/
+│   ├── pre-commit/
+│   ├── repro/
+│   ├── systemd/
+├── skills/
+│   ├── 1password/
+│   ├── apple-notes/
+│   ├── apple-reminders/
+│   ├── bear-notes/
+│   ├── bird/
+│   ├── blogwatcher/
+│   ├── blucli/
+│   ├── bluebubbles/
+│   ├── camsnap/
+│   ├── canvas/
+│   ├── clawdhub/
+│   ├── coding-agent/
+│   ├── discord/
+│   ├── eightctl/
+│   ├── food-order/
+│   ├── gemini/
+│   ├── gifgrep/
+│   ├── github/
+│   ├── gog/
+│   ├── goplaces/
+│   ├── himalaya/
+│   ├── imsg/
+│   ├── local-places/
+│   ├── mcporter/
+│   ├── model-usage/
+│   ├── nano-banana-pro/
+│   ├── nano-pdf/
+│   ├── notion/
+│   ├── obsidian/
+│   ├── openai-image-gen/
+│   ├── openai-whisper/
+│   ├── openai-whisper-api/
+│   ├── openhue/
+│   ├── oracle/
+│   ├── ordercli/
+│   ├── peekaboo/
+│   ├── sag/
+│   ├── session-logs/
+│   ├── sherpa-onnx-tts/
+│   ├── skill-creator/
+│   ├── slack/
+│   ├── songsee/
+│   ├── sonoscli/
+│   ├── spotify-player/
+│   ├── summarize/
+│   ├── things-mac/
+│   ├── tmux/
+│   ├── trello/
+│   ├── video-frames/
+│   ├── voice-call/
+│   ├── wacli/
+│   └── weather/
 ├── src/
-│   ├── cli/                        — CLI wiring + progress utilities
-│   ├── commands/                   — Command handlers
-│   ├── provider-web.ts             — Web provider
-│   ├── infra/                      — Infrastructure utilities
-│   ├── media/                      — Media pipeline
-│   ├── telegram/                   — Telegram channel
-│   ├── discord/                    — Discord channel
-│   ├── slack/                      — Slack channel
-│   ├── signal/                     — Signal channel
-│   ├── imessage/                   — iMessage channel
-│   ├── web/                        — WhatsApp web channel
-│   ├── channels/                   — Channel abstractions
-│   ├── routing/                    — Message routing
-│   ├── terminal/                   — Terminal UI (palette, table, progress)
-│   └── canvas-host/a2ui/           — A2UI bundle (auto-generated .bundle.hash)
-├── extensions/                     — Plugin packages (msteams, matrix, zalo, voice-call)
-├── docs/                           — Mintlify docs (channels/, platforms/, reference/)
-├── tests/                          — Colocated *.test.ts, *.e2e.test.ts
-├── scripts/                        — Build/package/release scripts
-├── dist/                           — Built output
-└── package.json                    — CLI version, deps, scripts
-```
+│   ├── acp/
+│   ├── agents/
+│   ├── auto-reply/
+│   ├── browser/
+│   ├── canvas-host/
+│   ├── channels/
+│   ├── cli/
+│   ├── commands/
+│   ├── config/
+│   ├── cron/
+│   ├── daemon/
+│   ├── discord/
+│   ├── docs/
+│   ├── gateway/
+│   ├── hooks/
+│   ├── imessage/
+│   ├── infra/
+│   ├── line/
+│   ├── link-understanding/
+│   ├── logging/
+│   ├── macos/
+│   ├── markdown/
+│   ├── media/
+│   ├── media-understanding/
+│   ├── memory/
+│   ├── node-host/
+│   ├── pairing/
+│   ├── plugin-sdk/
+│   ├── plugins/
+│   ├── process/
+│   ├── providers/
+│   ├── routing/
+│   ├── security/
+│   ├── sessions/
+│   ├── shared/
+│   ├── signal/
+│   ├── slack/
+│   ├── telegram/
+│   ├── terminal/
+│   ├── test-helpers/
+│   ├── test-utils/
+│   ├── tts/
+│   ├── tui/
+│   ├── types/
+│   ├── utils/
+│   ├── web/
+│   ├── whatsapp/
+│   ├── wizard/
+│   ├── index.ts
+├── test/
+│   ├── fixtures/
+│   ├── helpers/
+│   ├── mocks/
+├── ui/
+│   ├── public/
+│   ├── src/
+│   ├── package.json
+├── vendor/
+│   └── a2ui/
+├── AGENTS.md
+├── README.md
+├── package.json
 
 ## WHERE TO LOOK
 
@@ -56,43 +223,72 @@ Clawdbot-Next/
 ## COMMANDS
 
 ```bash
-# Install dependencies
-pnpm install
-
-# Pre-commit hooks
-prek install
-
-# Run CLI in dev
-pnpm clawdbot ...
-
-# Type-check + build
-pnpm build
-
-# Lint + format
-pnpm lint
-pnpm format
-
-# Tests
-pnpm test
-pnpm test:coverage
-
-# Live tests (real keys)
-CLAWDBOT_LIVE_TEST=1 pnpm test:live
-LIVE=1 pnpm test:live
-
-# Docker live tests
-pnpm test:docker:live-models
-pnpm test:docker:live-gateway
-pnpm test:docker:onboard
-
-# Mac packaging
-scripts/package-mac-app.sh
-
-# Commit helper
-scripts/committer "<msg>" <file...>
-
-# Update contributors
-bun scripts/update-clawtributors.ts
+pnpm android:assemble                           # cd apps/android && ./gradlew :app:assembleDebug
+pnpm android:install                           # cd apps/android && ./gradlew :app:installDebug
+pnpm android:run                           # cd apps/android && ./gradlew :app:installDebug && adb shell am start -n com.clawdbot.android/.MainActivity
+pnpm android:test                           # cd apps/android && ./gradlew :app:testDebugUnitTest
+pnpm build                           # tsc -p tsconfig.json && node --import tsx scripts/canvas-a2ui-copy.ts && node --import tsx scripts/copy-hook-metadata.ts && node --import tsx scripts/write-build-info.ts
+pnpm canvas:a2ui:bundle                           # bash scripts/bundle-a2ui.sh
+pnpm check:loc                           # node --import tsx scripts/check-ts-max-loc.ts --max 500
+pnpm clawdbot                           # node scripts/run-node.mjs
+pnpm clawdbot:rpc                           # node scripts/run-node.mjs agent --mode rpc --json
+pnpm dev                           # node scripts/run-node.mjs
+pnpm docs:bin                           # node scripts/build-docs-list.mjs
+pnpm docs:build                           # cd docs && pnpm dlx --reporter append-only mint broken-links
+pnpm docs:dev                           # cd docs && mint dev
+pnpm docs:list                           # node scripts/docs-list.js
+pnpm format                           # oxfmt --check src test
+pnpm format:all                           # pnpm format && pnpm format:swift
+pnpm format:fix                           # oxfmt --write src test
+pnpm format:swift                           # swiftformat --lint --config .swiftformat apps/macos/Sources apps/ios/Sources apps/shared/ClawdbotKit/Sources
+pnpm gateway:dev                           # CLAWDBOT_SKIP_CHANNELS=1 node scripts/run-node.mjs --dev gateway
+pnpm gateway:dev:reset                           # CLAWDBOT_SKIP_CHANNELS=1 node scripts/run-node.mjs --dev gateway --reset
+pnpm gateway:watch                           # node scripts/watch-node.mjs gateway --force
+pnpm ios:build                           # bash -lc 'cd apps/ios && xcodegen generate && xcodebuild -project Clawdbot.xcodeproj -scheme Clawdbot -destination "${IOS_DEST:-platform=iOS Simulator,name=iPhone 17}" -configuration Debug build'
+pnpm ios:gen                           # cd apps/ios && xcodegen generate
+pnpm ios:open                           # cd apps/ios && xcodegen generate && open Clawdbot.xcodeproj
+pnpm ios:run                           # bash -lc 'cd apps/ios && xcodegen generate && xcodebuild -project Clawdbot.xcodeproj -scheme Clawdbot -destination "${IOS_DEST:-platform=iOS Simulator,name=iPhone 17}" -configuration Debug build && xcrun simctl boot "${IOS_SIM:-iPhone 17}" || true && xcrun simctl launch booted com.clawdbot.ios'
+pnpm lint                           # oxlint --type-aware src test
+pnpm lint:all                           # pnpm lint && pnpm lint:swift
+pnpm lint:fix                           # pnpm format:fix && oxlint --type-aware --fix src test
+pnpm lint:swift                           # swiftlint lint --config .swiftlint.yml && (cd apps/ios && swiftlint lint --config .swiftlint.yml)
+pnpm mac:open                           # open dist/Clawdbot.app
+pnpm mac:package                           # bash scripts/package-mac-app.sh
+pnpm mac:restart                           # bash scripts/restart-mac.sh
+pnpm plugins:sync                           # node --import tsx scripts/sync-plugin-versions.ts
+pnpm postinstall                           # node scripts/postinstall.js
+pnpm prepack                           # pnpm build && pnpm ui:build
+pnpm protocol:check                           # pnpm protocol:gen && pnpm protocol:gen:swift && git diff --exit-code -- dist/protocol.schema.json apps/macos/Sources/ClawdbotProtocol/GatewayModels.swift
+pnpm protocol:gen                           # node --import tsx scripts/protocol-gen.ts
+pnpm protocol:gen:swift                           # node --import tsx scripts/protocol-gen-swift.ts
+pnpm release:check                           # node --import tsx scripts/release-check.ts
+pnpm start                           # node scripts/run-node.mjs
+pnpm test                           # node scripts/test-parallel.mjs
+pnpm test:all                           # pnpm lint && pnpm build && pnpm test && pnpm test:e2e && pnpm test:live && pnpm test:docker:all
+pnpm test:coverage                           # vitest run --coverage
+pnpm test:docker:all                           # pnpm test:docker:live-models && pnpm test:docker:live-gateway && pnpm test:docker:onboard && pnpm test:docker:gateway-network && pnpm test:docker:qr && pnpm test:docker:doctor-switch && pnpm test:docker:plugins && pnpm test:docker:cleanup
+pnpm test:docker:cleanup                           # bash scripts/test-cleanup-docker.sh
+pnpm test:docker:doctor-switch                           # bash scripts/e2e/doctor-install-switch-docker.sh
+pnpm test:docker:gateway-network                           # bash scripts/e2e/gateway-network-docker.sh
+pnpm test:docker:live-gateway                           # bash scripts/test-live-gateway-models-docker.sh
+pnpm test:docker:live-models                           # bash scripts/test-live-models-docker.sh
+pnpm test:docker:onboard                           # bash scripts/e2e/onboard-docker.sh
+pnpm test:docker:plugins                           # bash scripts/e2e/plugins-docker.sh
+pnpm test:docker:qr                           # bash scripts/e2e/qr-import-docker.sh
+pnpm test:e2e                           # vitest run --config vitest.e2e.config.ts
+pnpm test:force                           # node --import tsx scripts/test-force.ts
+pnpm test:install:e2e                           # bash scripts/test-install-sh-e2e-docker.sh
+pnpm test:install:e2e:anthropic                           # CLAWDBOT_E2E_MODELS=anthropic bash scripts/test-install-sh-e2e-docker.sh
+pnpm test:install:e2e:openai                           # CLAWDBOT_E2E_MODELS=openai bash scripts/test-install-sh-e2e-docker.sh
+pnpm test:install:smoke                           # bash scripts/test-install-sh-docker.sh
+pnpm test:live                           # CLAWDBOT_LIVE_TEST=1 vitest run --config vitest.live.config.ts
+pnpm test:ui                           # pnpm --dir ui test
+pnpm test:watch                           # vitest
+pnpm tui                           # node scripts/run-node.mjs tui
+pnpm tui:dev                           # CLAWDBOT_PROFILE=dev node scripts/run-node.mjs tui
+pnpm ui:build                           # node scripts/ui.js build
+pnpm ui:dev                           # node scripts/ui.js dev
+pnpm ui:install                           # node scripts/ui.js install
 ```
 
 ## CONVENTIONS
