@@ -246,12 +246,10 @@ export async function buildAgentSystemPrompt(params: {
   let instantiatedSkills = selectedSkills
     .map((skill) => SkillInjector.instantiate(skill, context))
     .join("\n\n");
-
-  // [NEW] Integration: Restore display of user-installed external SKILL.md files
-  if (params.skillsPrompt?.trim()) {
-    instantiatedSkills +=
-      "\n\n### [Library: External Procedural Skills]\n" + params.skillsPrompt.trim();
-  }
+  instantiatedSkills = instantiatedSkills.replaceAll(
+    "<available_skills>",
+    "available skills catalog",
+  );
 
   // [NEW] Build the Matrix parts
   const matrixLines = buildMatrixSection(context, instantiatedSkills);
@@ -384,7 +382,7 @@ export async function buildAgentSystemPrompt(params: {
   const messageChannelOptions = listDeliverableMessageChannels().join("|");
   const promptMode = params.promptMode ?? "full";
   const isMinimal = promptMode === "minimal" || promptMode === "none";
-  const _skillsSection = buildSkillsSection({
+  const skillsSection = buildSkillsSection({
     skillsPrompt,
     isMinimal,
     readToolName,
@@ -430,8 +428,9 @@ export async function buildAgentSystemPrompt(params: {
     "## Clawdbot CLI Quick Reference",
     "Clawdbot is controlled via subcommands. Do not invent commands.",
     "- clawdbot gateway status|start|stop|restart",
+    "- clawdbot gateway restart",
     "",
-    // ...skillsSection, // [NEW] Replacing legacy skills section with active skills library from Matrix
+    ...skillsSection,
     ...memorySection,
     hasGateway && !isMinimal ? "## Clawdbot Self-Update" : "",
     hasGateway && !isMinimal
@@ -444,6 +443,9 @@ export async function buildAgentSystemPrompt(params: {
     "",
     params.modelAliasLines && params.modelAliasLines.length > 0 && !isMinimal
       ? "## Model Aliases"
+      : "",
+    params.modelAliasLines && params.modelAliasLines.length > 0 && !isMinimal
+      ? "Prefer aliases when specifying model overrides"
       : "",
     params.modelAliasLines && params.modelAliasLines.length > 0 && !isMinimal
       ? params.modelAliasLines.join("\n")
@@ -459,7 +461,14 @@ export async function buildAgentSystemPrompt(params: {
     params.sandboxInfo?.enabled
       ? [
           "You are running in a sandboxed runtime (tools execute in Docker).",
+          "Sub-agents stay sandboxed.",
           "Some tools may be unavailable due to sandbox policy.",
+          params.sandboxInfo.elevated?.allowed
+            ? "User can toggle with /elevated on|off|ask|full."
+            : "",
+          params.sandboxInfo.elevated?.allowed
+            ? `Current elevated level: ${params.sandboxInfo.elevated.defaultLevel}`
+            : "",
           params.sandboxInfo.workspaceDir
             ? `Sandbox workspace: ${params.sandboxInfo.workspaceDir}`
             : "",
@@ -491,10 +500,12 @@ export async function buildAgentSystemPrompt(params: {
     lines.push(contextHeader, extraSystemPrompt, "");
   }
   if (params.reactionGuidance) {
-    const { level } = params.reactionGuidance;
+    const { level, channel } = params.reactionGuidance;
     lines.push(
       "## Reactions",
-      level === "minimal" ? "Reaction level: Minimal" : "Reaction level: Extensive",
+      level === "minimal"
+        ? `Reactions are enabled for ${channel} in MINIMAL mode.`
+        : `Reactions are enabled for ${channel} in EXTENSIVE mode.`,
       "",
     );
   }
@@ -548,6 +559,8 @@ export async function buildAgentSystemPrompt(params: {
     "## Runtime",
     buildRuntimeLine(runtimeInfo, runtimeChannel, runtimeCapabilities, params.defaultThinkLevel),
     `Reasoning: ${reasoningLevel}`,
+    "Toggle with /reasoning.",
+    "/status shows Reasoning.",
   );
 
   return lines.filter(Boolean).join("\n");

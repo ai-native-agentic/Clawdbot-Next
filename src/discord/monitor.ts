@@ -23,6 +23,11 @@ export { createDiscordMessageHandler } from "./monitor/message-handler.js";
 export { buildDiscordMediaPayload } from "./monitor/message-utils.js";
 export { createDiscordNativeCommand } from "./monitor/native-command.js";
 export type { MonitorDiscordOpts } from "./monitor/provider.js";
-export { monitorDiscordProvider } from "./monitor/provider.js";
+export async function monitorDiscordProvider(
+  ...args: Parameters<typeof import("./monitor/provider.js").monitorDiscordProvider>
+): ReturnType<typeof import("./monitor/provider.js").monitorDiscordProvider> {
+  const { monitorDiscordProvider: monitor } = await import("./monitor/provider.js");
+  return monitor(...args);
+}
 
 export { resolveDiscordReplyTarget, sanitizeDiscordThreadName } from "./monitor/threading.js";

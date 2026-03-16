@@ -1,10 +1,9 @@
-import {
-  ChannelType,
-  type Client,
-  MessageCreateListener,
-  MessageReactionAddListener,
-  MessageReactionRemoveListener,
-} from "@buape/carbon";
+import { ChannelType, type Client } from "@buape/carbon";
+import type {
+  GatewayMessageCreateDispatchData,
+  GatewayMessageReactionAddDispatchData,
+  GatewayMessageReactionRemoveDispatchData,
+} from "discord-api-types/v10";
 
 import { danger } from "../../globals.js";
 import { formatDurationSeconds } from "../../infra/format-duration.js";
@@ -24,11 +23,24 @@ type LoadedConfig = ReturnType<typeof import("../../config/config.js").loadConfi
 type RuntimeEnv = import("../../runtime.js").RuntimeEnv;
 type Logger = ReturnType<typeof import("../../logging/subsystem.js").createSubsystemLogger>;
 
-export type DiscordMessageEvent = Parameters<MessageCreateListener["handle"]>[0];
+type DiscordGatewayListener<EventType> = {
+  readonly type: string;
+  handle(data: EventType, client: Client): Promise<void> | void;
+};
+
+abstract class BaseDiscordGatewayListener<EventType> implements DiscordGatewayListener<EventType> {
+  abstract readonly type: string;
+
+  abstract handle(data: EventType, client: Client): Promise<void> | void;
+}
+
+export type DiscordMessageEvent = GatewayMessageCreateDispatchData;
 
 export type DiscordMessageHandler = (data: DiscordMessageEvent, client: Client) => Promise<void>;
 
-type DiscordReactionEvent = Parameters<MessageReactionAddListener["handle"]>[0];
+type DiscordReactionEvent =
+  | GatewayMessageReactionAddDispatchData
+  | GatewayMessageReactionRemoveDispatchData;
 
 const DISCORD_SLOW_LISTENER_THRESHOLD_MS = 30_000;
 const discordEventQueueLog = createSubsystemLogger("discord/event-queue");
@@ -63,7 +75,9 @@ export function registerDiscordListener(listeners: Array<object>, listener: obje
   return true;
 }
 
-export class DiscordMessageListener extends MessageCreateListener {
+export class DiscordMessageListener extends BaseDiscordGatewayListener<DiscordMessageEvent> {
+  readonly type = "MESSAGE_CREATE";
+
   constructor(
     private handler: DiscordMessageHandler,
     private logger?: Logger,
@@ -90,7 +104,9 @@ export class DiscordMessageListener extends MessageCreateListener {
   }
 }
 
-export class DiscordReactionListener extends MessageReactionAddListener {
+export class DiscordReactionListener extends BaseDiscordGatewayListener<GatewayMessageReactionAddDispatchData> {
+  readonly type = "MESSAGE_REACTION_ADD";
+
   constructor(
     private params: {
       cfg: LoadedConfig;
@@ -128,7 +144,9 @@ export class DiscordReactionListener extends MessageReactionAddListener {
   }
 }
 
-export class DiscordReactionRemoveListener extends MessageReactionRemoveListener {
+export class DiscordReactionRemoveListener extends BaseDiscordGatewayListener<GatewayMessageReactionRemoveDispatchData> {
+  readonly type = "MESSAGE_REACTION_REMOVE";
+
   constructor(
     private params: {
       cfg: LoadedConfig;
