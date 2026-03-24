@@ -303,6 +303,51 @@ pnpm ui:install                           # node scripts/ui.js install
 - Run `pnpm test` before pushing logic changes; max 16 workers
 - Pure test additions skip changelog unless user-facing
 
+### QA Gates (`.harness/run-gates.sh`)
+
+The project uses a 6-gate QA system to ensure code quality:
+
+| Gate | Name | Status | Description |
+|------|------|--------|-------------|
+| A | format | ✅ Enabled | Prettier formatting check |
+| B | lint | ✅ Enabled | TypeScript linting (oxlint/oxfmt) |
+| C | test | ✅ Enabled | Unit tests (Vitest) |
+| D | integration | ✅ Enabled | Integration tests |
+| E | e2e | ✅ Enabled | End-to-end tests |
+| F | security | ✅ Enabled | Security audit (pnpm audit) |
+
+#### Running QA Gates
+
+```bash
+# Run all enabled gates
+bash .harness/run-gates.sh
+
+# Expected output:
+# === Clawdbot-Next QA Gates ===
+#   format              ... PASS
+#   lint                ... PASS
+#   build               ... PASS
+#   test                ... PASS
+#   e2e                 ... PASS
+#   security            ... PASS
+# === Results ===
+#   PASS: 6  FAIL: 0
+```
+
+#### Gate Configuration
+
+Edit `.harness/config.yaml` to enable/disable gates:
+
+```yaml
+gates:
+  gate_a: true   # format check (prettier)
+  gate_b: true   # type check (tsc)
+  gate_c: true   # unit tests (vitest)
+  gate_d: true   # integration tests
+  gate_e: true   # e2e tests
+  gate_f: true   # security audit
+```
+
 ### Docs (Mintlify)
 - Hosted at docs.clawd.bot; internal links root-relative, no `.md`/`.mdx`
 - Avoid em dashes/apostrophes in headings (breaks anchors)

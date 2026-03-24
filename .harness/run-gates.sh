@@ -79,6 +79,20 @@ else
   skip_gate "test" "no test command"
 fi
 
+# Gate E: E2E tests
+if [[ -d "$PROJECT_ROOT/node_modules" ]]; then
+  run_gate "e2e" "pnpm test:e2e"
+else
+  skip_gate "e2e" "node_modules missing"
+fi
+
+# Gate F: Security audit
+if [[ -d "$PROJECT_ROOT/node_modules" ]]; then
+  run_gate "security" "pnpm audit"
+else
+  skip_gate "security" "node_modules missing"
+fi
+
 echo ""
 echo "=== Results ==="
 echo -e "  ${GREEN}PASS: $PASS${NC}  ${YELLOW}SKIP: $SKIP${NC}  ${RED}FAIL: $FAIL${NC}"
