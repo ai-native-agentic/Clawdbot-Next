@@ -1,4 +1,4 @@
-import { RateLimitError } from "@buape/carbon";
+import { RateLimitError } from "@buape/carbon-request";
 
 import { formatErrorMessage } from "./errors.js";
 import { type RetryConfig, resolveRetryConfig, retryAsync } from "./retry.js";
