@@ -9,6 +9,26 @@ import { getMemorySearchManager, type MemoryIndexManager } from "./index.js";
 const embedBatch = vi.fn(async (texts: string[]) => texts.map(() => [0, 1, 0]));
 const embedQuery = vi.fn(async () => [0, 1, 0]);
 
+vi.mock("./sqlite.js", () => ({
+  requireNodeSqlite: () => ({
+    DatabaseSync: class {
+      public filepath: string;
+      constructor(filepath: string) {
+        this.filepath = filepath;
+      }
+      prepare(sql: string) {
+        return {
+          run: () => {},
+          get: () => undefined,
+          all: () => [],
+        };
+      }
+      exec(sql: string) {}
+      close() {}
+    },
+  }),
+}));
+
 vi.mock("./embeddings.js", () => ({
   createEmbeddingProvider: async () => ({
     requestedProvider: "openai",
@@ -19,6 +39,14 @@ vi.mock("./embeddings.js", () => ({
       embedBatch,
     },
   }),
+}));
+
+vi.mock("../agents/model-auth.js", () => ({
+  requireApiKey: (key: string) => {
+    if (!key) throw new Error('No API key found for provider "openai"');
+    return "test-api-key-for-mock";
+  },
+  resolveApiKeyForProvider: async () => "openai",
 }));
 
 describe("memory embedding batches", () => {

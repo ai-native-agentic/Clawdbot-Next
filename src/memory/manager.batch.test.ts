@@ -9,6 +9,26 @@ import { getMemorySearchManager, type MemoryIndexManager } from "./index.js";
 const embedBatch = vi.fn(async () => []);
 const embedQuery = vi.fn(async () => [0.5, 0.5, 0.5]);
 
+vi.mock("./sqlite.js", () => ({
+  requireNodeSqlite: () => ({
+    DatabaseSync: class {
+      public filepath: string;
+      constructor(filepath: string) {
+        this.filepath = filepath;
+      }
+      prepare(sql: string) {
+        return {
+          run: () => {},
+          get: () => undefined,
+          all: () => [],
+        };
+      }
+      exec(sql: string) {}
+      close() {}
+    },
+  }),
+}));
+
 vi.mock("./embeddings.js", () => ({
   createEmbeddingProvider: async () => ({
     requestedProvider: "openai",

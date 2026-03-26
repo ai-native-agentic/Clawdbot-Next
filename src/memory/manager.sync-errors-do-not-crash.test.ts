@@ -15,6 +15,26 @@ vi.mock("chokidar", () => ({
   },
 }));
 
+vi.mock("./sqlite.js", () => ({
+  requireNodeSqlite: () => ({
+    DatabaseSync: class {
+      public filepath: string;
+      constructor(filepath: string) {
+        this.filepath = filepath;
+      }
+      prepare(sql: string) {
+        return {
+          run: () => {},
+          get: () => undefined,
+          all: () => [],
+        };
+      }
+      exec(sql: string) {}
+      close() {}
+    },
+  }),
+}));
+
 vi.mock("./embeddings.js", () => {
   return {
     createEmbeddingProvider: async () => ({
@@ -30,6 +50,14 @@ vi.mock("./embeddings.js", () => {
     }),
   };
 });
+
+vi.mock("../agents/model-auth.js", () => ({
+  requireApiKey: (key: string) => {
+    if (!key) throw new Error('No API key found for provider "openai"');
+    return "test-api-key-for-mock";
+  },
+  resolveApiKeyForProvider: async () => "openai",
+}));
 
 describe("memory manager sync failures", () => {
   let workspaceDir: string;
