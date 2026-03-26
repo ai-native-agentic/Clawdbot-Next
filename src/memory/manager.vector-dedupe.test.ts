@@ -7,6 +7,26 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { getMemorySearchManager, type MemoryIndexManager } from "./index.js";
 import { buildFileEntry } from "./internal.js";
 
+vi.mock("./sqlite.js", () => ({
+  requireNodeSqlite: () => ({
+    DatabaseSync: class {
+      public filepath: string;
+      constructor(filepath: string) {
+        this.filepath = filepath;
+      }
+      prepare(sql: string) {
+        return {
+          run: () => {},
+          get: () => undefined,
+          all: () => [],
+        };
+      }
+      exec(sql: string) {}
+      close() {}
+    },
+  }),
+}));
+
 vi.mock("./embeddings.js", () => {
   return {
     createEmbeddingProvider: async () => ({
@@ -18,6 +38,16 @@ vi.mock("./embeddings.js", () => {
         embedBatch: async (texts: string[]) => texts.map((_, index) => [index + 1, 0, 0]),
       },
     }),
+  };
+});
+
+vi.mock("../agents/model-auth.js", () => {
+  return {
+    requireApiKey: (key: string) => {
+      if (!key) throw new Error('No API key found for provider "openai"');
+      return "test-api-key-for-mock";
+    },
+    resolveApiKeyForProvider: async () => "openai",
   };
 });
 
@@ -52,6 +82,7 @@ describe("memory vector dedupe", () => {
             store: { path: indexPath, vector: { enabled: true } },
             sync: { watch: false, onSessionStart: false, onSearch: false },
             cache: { enabled: false },
+            local: { modelPath: "/dev/null" },
           },
         },
         list: [{ id: "main", default: true }],
@@ -59,7 +90,9 @@ describe("memory vector dedupe", () => {
     };
 
     const result = await getMemorySearchManager({ cfg, agentId: "main" });
-    expect(result.manager).not.toBeNull();
+    if (!result.manager) {
+      throw new Error(`Failed to create manager: ${result.error}`);
+    }
     if (!result.manager) throw new Error("manager missing");
     manager = result.manager;
 
