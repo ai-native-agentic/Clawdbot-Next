@@ -9,6 +9,48 @@ import { getMemorySearchManager, type MemoryIndexManager } from "./index.js";
 let embedBatchCalls = 0;
 let failEmbeddings = false;
 
+// Global mock database storage
+const globalMockDatabases = new Map<string, { data: Map<string, any[]> }>();
+
+vi.mock("./sqlite.js", () => ({
+  requireNodeSqlite: () => ({
+    DatabaseSync: class {
+      public filepath: string;
+      constructor(filepath: string) {
+        this.filepath = filepath;
+        if (!globalMockDatabases.has(filepath)) {
+          globalMockDatabases.set(filepath, { data: new Map() });
+        }
+      }
+      prepare(sql: string) {
+        const db = globalMockDatabases.get(this.filepath)!;
+        return {
+          run: () => {},
+          get: () => undefined,
+          all: () => db.data.get(sql) || [],
+          bind: function (this: any, ...args: any[]) {
+            return this;
+          },
+          iterate: () => [],
+        };
+      }
+      exec(sql: string) {
+        const db = globalMockDatabases.get(this.filepath)!;
+        if (sql.includes("CREATE TABLE")) {
+          db.data.set(sql, []);
+        }
+      }
+      close() {}
+      enableLoadExtension(_enabled: boolean) {}
+      loadExtension(_path: string) {}
+    },
+  }),
+}));
+
+vi.mock("./sqlite-vec.ts", () => ({
+  loadSqliteVecExtension: async () => ({ ok: true }),
+}));
+
 vi.mock("./embeddings.js", () => {
   const embedText = (text: string) => {
     const lower = text.toLowerCase();

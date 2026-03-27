@@ -25,6 +25,8 @@ vi.mock("./sqlite.js", () => ({
       }
       exec(sql: string) {}
       close() {}
+      enableLoadExtension(_enabled: boolean) {}
+      loadExtension(_path: string) {}
     },
   }),
 }));

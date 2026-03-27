@@ -17,24 +17,41 @@ vi.mock("chokidar", () => ({
   },
 }));
 
-vi.mock("./sqlite.js", () => ({
-  requireNodeSqlite: () => ({
-    DatabaseSync: class {
-      public filepath: string;
-      constructor(filepath: string) {
-        this.filepath = filepath;
-      }
-      prepare(sql: string) {
-        return {
-          run: () => {},
-          get: () => undefined,
-          all: () => [],
-        };
-      }
-      exec(sql: string) {}
-      close() {}
-    },
-  }),
+vi.mock("./sqlite.js", () => {
+  const mockData: Record<string, any[]> = {};
+  return {
+    requireNodeSqlite: () => ({
+      DatabaseSync: class {
+        public filepath: string;
+        constructor(filepath: string) {
+          this.filepath = filepath;
+        }
+        prepare(sql: string) {
+          const stmt = {
+            run: () => {},
+            get: () => undefined,
+            all: () => mockData[sql] || [],
+            bind: () => stmt,
+            iterate: () => [],
+          };
+          return stmt;
+        }
+        exec(sql: string) {
+          if (sql.includes("CREATE TABLE")) {
+            const tableName = sql.match(/CREATE TABLE (\w+)/)?.[1];
+            if (tableName) mockData[sql] = [];
+          }
+        }
+        close() {}
+        enableLoadExtension(_enabled: boolean) {}
+        loadExtension(_path: string) {}
+      },
+    }),
+  };
+});
+
+vi.mock("./sqlite-vec.ts", () => ({
+  loadSqliteVecExtension: async () => ({ ok: true }),
 }));
 
 vi.mock("./embeddings.js", () => {
